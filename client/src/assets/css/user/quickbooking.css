@@ -1,0 +1,59 @@
+.quick-booking {
+  background-color: #f0f6ff;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: nowrap; /* Không cho xuống dòng */
+  overflow-x: auto;   /* Cuộn ngang nếu bị tràn */
+  white-space: nowrap;
+}
+
+.booking-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  min-width: 130px;
+  flex-shrink: 0; /* Không co lại */
+}
+
+.booking-selects {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.booking-selects select {
+  padding: 10px 14px;
+  border: 1px solid #1890ff;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #1890ff;
+  background: white;
+  min-width: 180px;
+  max-width: 200px;
+  cursor: pointer;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.booking-btn {
+  padding: 10px 20px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  min-width: 100px;
+  cursor: pointer;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.booking-btn:hover {
+  background-color: #1677cc;
+}

@@ -1,0 +1,109 @@
+/* ===== Layout ===== */
+  .seat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .seat-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  
+  /* ===== Ghế cơ bản ===== */
+  .seat {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  
+  .seat:hover:not(.taken) {
+    box-shadow: 0 0 0 2px #0d6efd66;
+  }
+  
+  /* ===== Ghế đã tồn tại ===== */
+  .seat.taken {
+    background-color: #ddd;
+    cursor: not-allowed;
+    border-color: #aaa;
+  }
+  
+  /* Ghế đôi đã tồn tại */
+  .seat.taken.double {
+    background-color: #ffb6c1;
+    border-color: #d87093;
+  }
+  
+  /* ===== Ghế đang chọn ===== */
+  .seat.selected {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0a58ca;
+  }
+  
+  /* Ghế đôi đang chọn */
+  .seat.double.selected {
+    background-color: #ff80ab;
+    border-color: #d64f75;
+  }
+  
+  /* ===== Nút bấm ===== */
+  button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    transition: 0.2s ease;
+  }
+  
+  button svg {
+    margin-bottom: 1px;
+  }
+  
+  .btn-save {
+    background-color: #198754;
+    color: white;
+  }
+  
+  .btn-save:hover {
+    background-color: #157347;
+  }
+  
+  .btn-delete {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn-delete:hover {
+    background-color: #bb2d3b;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .seat.selected-book {
+    background-color: #4caf50; /* xanh đặt */
+    border: 2px solid #388e3c;
+  }
+  
+  .seat.selected-cancel {
+    background-color: #f44336; /* đỏ huỷ */
+    border: 2px solid #c62828;
+  }
+  
+  .seat.taken.can-click {
+    cursor: pointer !important;
+  }
+  

@@ -1,0 +1,173 @@
+/* CSS cho adminForm.css */
+.movie-form-container {
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .movie-form {
+    display: grid;
+    grid-template-columns: 65% 35%;
+    gap: 30px;
+  }
+  
+  /* Cột trái - thông tin chính */
+  .movie-form-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Cột phải - poster và các nút chức năng */
+  .movie-form-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Style chung cho các label */
+  .movie-form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 15px;
+  }
+  
+  /* Style chung cho các input và select */
+  .movie-form input,
+  .movie-form select,
+  .movie-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  /* Style cho textarea mô tả */
+  .movie-form textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+  
+  /* Layout 2 cột cho các trường ngắn */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+  
+  /* Style cho các trường full width */
+  .full-width {
+    grid-column: span 2;
+    margin-bottom: 10px;
+  }
+  
+  /* Style cho ảnh preview */
+  .image-preview {
+    width: 200px;
+    height: 300px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    overflow: hidden;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin: 0 auto; /* Căn giữa khối ảnh */
+  }
+  
+  .image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  
+  /* Style cho phần upload ảnh */
+  .file-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .file-name {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  /* Style cho select thể loại */
+  .genre-select {
+    height: 120px;
+    margin-bottom: 15px;
+  }
+  
+  /* Style cho các nút */
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    font-size: 14px;
+  }
+  
+  .btn-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: flex-end;
+  }
+  
+  .save-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .save-btn:hover {
+    background-color: #45a049;
+  }
+  
+  .cancel-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Style cho phần upload */
+  .upload-btn {
+    background-color: #17a2b8;
+    color: white;
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .upload-btn:hover {
+    background-color: #138496;
+  }
+  
+  /* Điều chỉnh thể loại select */
+  .genre-container {
+    margin-bottom: 15px;
+  }
+  
+  select[multiple] {
+    height: 100px;
+  }

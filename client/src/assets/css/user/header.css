@@ -1,0 +1,130 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #0b1121;
+  color: white;
+  padding: 12px 40px 0;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+  
+  .header-top,
+  .header-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .header-bottom {
+      margin-top: 12px;
+      padding: 8px 0 14px;
+    }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .search-login {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .search-box {
+    background: white;
+    border-radius: 30px;
+    padding: 5px 12px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-box input {
+    border: none;
+    outline: none;
+    padding: 6px 8px;
+    width: 180px;
+    border-radius: 30px;
+  }
+  
+  .search-box button {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .login-btn {
+    background: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .left-nav,
+  .right-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .nav-highlight {
+    background: #f8e71c;
+    color: black !important;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .user-menu {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: white;
+    border: 1px solid #ddd;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 999;
+  }
+  
+  .dropdown-menu a,
+  .dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: black;
+    text-decoration: none;
+  }
+  
+  .dropdown-menu a:hover,
+  .dropdown-menu button:hover {
+    background-color: #f0f0f0;
+  }

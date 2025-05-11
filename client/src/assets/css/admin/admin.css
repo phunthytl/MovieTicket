@@ -1,0 +1,264 @@
+/* Login Page */
+.login-container {
+  min-height: 100vh;
+  background: #f6f7fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.login-form input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.login-form button {
+  width: 100%;
+  background: #4a90e2;
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-form button:hover {
+  background: #357bd8;
+}
+
+.error-text {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* Admin Sidebar */
+.admin-sidebar {
+  width: 220px;
+  background-color: #191932;
+  color: white;
+  height: 100vh;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-link {
+  color: #ccc;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-link:hover {
+  background-color: #2d2d47;
+  color: white;
+}
+
+.sidebar-link.active {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* Admin Header */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-header-left h2 {
+  font-size: 20px;
+  margin: 0;
+  color: #333;
+}
+
+.admin-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-name {
+  font-weight: 500;
+  color: #555;
+}
+
+.logout-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #d32f2f;
+}
+
+/* Admin Layout Fix */
+.admin-layout {
+  display: flex;
+}
+
+.admin-main {
+  margin-left: 220px;
+  width: calc(100% - 220px);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f6f7fb;
+}
+
+.admin-content {
+  padding: 24px;
+  flex: 1;
+}
+
+/* Movie Management Page */
+
+.movie-management {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.admin-table thead {
+  background-color: #f6f7fb;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.admin-table th {
+  color: #555;
+  font-weight: 600;
+}
+
+.admin-table td {
+  color: #333;
+}
+
+.admin-table td.action-buttons {
+  display: flex;
+}
+
+
+.admin-table button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 8px;
+  color: #4a90e2;
+  transition: color 0.2s ease;
+}
+
+.admin-table button:hover {
+  color: #2f73c0;
+}
+
+.add-movie-btn {
+  background-color: #4a90e2;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: background 0.2s ease;
+}
+
+.add-movie-btn:hover {
+  background-color: #357bd8;
+}
+
+.movie-management-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.movie-management-header .section-title {
+  margin: 0;
+}
+
+.movie-management-header .add-movie-btn {
+  margin-bottom: 0;
+}
+

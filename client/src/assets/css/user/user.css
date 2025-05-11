@@ -1,0 +1,68 @@
+/* --- Tổng thể --- */
+.home-page {
+  background-color: #0b1121;
+  color: white;
+  padding-bottom: 10px;
+}
+
+/* --- Banner slider --- */
+.home-slider {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.slider-banner {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+/* === Tabs Đang chiếu / Sắp chiếu === */
+.home-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.home-tabs button {
+  padding: 8px 20px;
+  border: 1px solid #4096ff;
+  border-radius: 4px;
+  background-color: transparent;
+  color: #4096ff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.home-tabs button.active {
+  background-color: #4096ff;
+  color: white;
+}
+
+/* === Xem thêm === */
+.home-see-more {
+  text-align: center;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.home-see-more button {
+  padding: 10px 20px;
+  background-color: #4096ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.home-see-more button:hover {
+  background-color: #2676d3;
+}

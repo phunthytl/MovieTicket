@@ -1,0 +1,116 @@
+/* foodModal.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content.large {
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .modal-content.large h2 {
+    background-color: #2196f3;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .food-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .food-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 12px;
+  }
+  
+  .food-image {
+    width: 80px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  
+  .food-info {
+    color: #000;
+    flex: 1;
+  }
+  
+  .food-info h4 {
+    margin: 0 0 4px;
+  }
+  
+  .counter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  
+  .counter button {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    border: none;
+    background: #2196f3;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .counter span {
+    min-width: 24px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .food-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 12px;
+  }
+  
+  .summary p {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .summary strong {
+    font-size: 18px;
+    color: #000;
+  }
+  
+  .confirm-btn {
+    background-color: #2196f3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  

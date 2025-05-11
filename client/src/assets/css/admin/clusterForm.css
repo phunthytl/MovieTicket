@@ -1,0 +1,10 @@
+.snack-form-left textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical; /* Cho phép kéo giãn */
+    min-height: 150px; /* ✅ Tăng chiều cao ban đầu */
+    height: 200px;     /* ✅ Tăng chiều cao mặc định */
+    line-height: 1.6;
+  }

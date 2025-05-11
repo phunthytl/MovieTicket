@@ -1,0 +1,12 @@
+.snack-form-left label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  .snack-form-left > div {
+    display: flex;
+    flex-direction: column;
+  }
