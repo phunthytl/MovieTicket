@@ -66,7 +66,7 @@ export default function ManageUsers() {
 							<td>{user.email}</td>
 							<td>{user.username}</td>
 							<td>{user.phone || '—'}</td>
-							<td>{user.isAdmin ? 'Quản trị viên' : 'Người dùng'}</td>
+							<td>{user.is_staff ? 'Quản trị viên' : 'Người dùng'}</td>
 							<td>
 								<button onClick={() => navigate(`/admin/users/${user.id}/edit`)}><FaEdit /></button>
 								<button onClick={() => handleDelete(user.id)}><FaTrash color="red" /></button>

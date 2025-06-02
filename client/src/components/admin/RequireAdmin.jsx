@@ -7,10 +7,10 @@ const RequireAdmin = ({ children }) => {
     const isAdmin = adminInfo?.isAdmin;
   
     if (isLoggedIn && isAdmin) {
-      return children;
+        return children;
     }
   
     return <Navigate to="/admin/login" replace />;
-  };
+};
 
 export default RequireAdmin;

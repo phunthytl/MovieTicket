@@ -52,11 +52,15 @@
     text-align: center;
 }
 
-.showtime-details {
-    flex: 1;
+/* .showtime-details {
+    display: flex;
+} */
+
+.cinema-item-st{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 30px;
 }
 
 .cinema-info {
@@ -99,4 +103,9 @@
 .no-showtimes {
     color: #ccc;
     margin-top: 20px;
+}
+
+.time-slots {
+    display: flex;
+    gap: 20px;
 }

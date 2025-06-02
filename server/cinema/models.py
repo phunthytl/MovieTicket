@@ -27,7 +27,6 @@ class Room(models.Model):
     id = models.CharField(primary_key=True, max_length=20)
     name = models.CharField(max_length=100, null=True, blank=True)
     type = models.CharField(max_length=100, null=True, blank=True)
-    seat_count = models.IntegerField(null=True, blank=True)
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
     status = models.CharField(max_length=50, null=True, blank=True)
 
@@ -37,31 +36,37 @@ class Room(models.Model):
 
 class Seat(models.Model):
     id = models.CharField(primary_key=True, max_length=20)
-    matrix_position = models.CharField(max_length=10)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    row = models.IntegerField(default=0)
+    row = models.CharField(max_length=10, null=True, blank=True)
     column = models.IntegerField(default=0)
     price = models.PositiveIntegerField(default=70000)
 
     def save(self, *args, **kwargs):
         try:
-            # Lấy max row trong cùng phòng
-            same_room_seats = Seat.objects.filter(room=self.room)
-            max_row = same_room_seats.aggregate(models.Max('row'))['row__max'] or self.row
+            same_room_rows = Seat.objects.filter(room=self.room, row__isnull=False)\
+                                         .values_list('row', flat=True).distinct()
+            sorted_rows = sorted(set(same_room_rows), key=lambda r: r.upper())
 
-            if self.row <= 1:
-                self.price = 50000  # ghế giá rẻ đầu phòng
-            elif self.row >= max_row - 1:
-                self.price = 90000  # ghế VIP cuối phòng
+            # Nếu row hiện tại nằm trong danh sách
+            if self.row and self.row.upper() in sorted_rows:
+                row_index = sorted_rows.index(self.row.upper())
+                total_rows = len(sorted_rows)
+
+                if row_index <= 1:
+                    self.price = 50000
+                elif row_index >= total_rows - 2:
+                    self.price = 90000
+                else:
+                    self.price = 70000
             else:
-                self.price = 70000  # ghế thường
+                self.price = 70000
         except:
-            self.price = 70000  # fallback nếu lỗi
+            self.price = 70000
 
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"Seat {self.matrix_position} - {self.room.name}"
+        return f"Seat {self.room.name}"
 
 
 class Showtime(models.Model):

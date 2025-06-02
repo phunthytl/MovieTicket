@@ -1,0 +1,204 @@
+/* Movie Reviews Page Styles */
+.movie-reviews-page {
+	background-color: #1a1a2e;
+	color: white;
+	min-height: 100vh;
+	padding: 120px 20px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+	font-size: 14px;
+	color: #ccc;
+}
+
+.breadcrumb-link {
+	color: #fff;
+	cursor: pointer;
+	transition: color 0.3s;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.breadcrumb-link:hover {
+	color: #ffd700;
+}
+
+.movie-header {
+	display: flex;
+	gap: 20px;
+	margin-bottom: 20px;
+	padding: 20px;
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 10px;
+}
+
+.movie-poster-review {
+	flex-shrink: 0;
+}
+
+.movie-poster-review img {
+	width: 120px;
+	height: 170px;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.movie-info-review h1 {
+	font-size: 24px;
+	margin-bottom: 10px;
+	color: #fff;
+}
+
+.movie-genres-review {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	color: #ccc;
+	font-size: 14px;
+}
+
+.rating-summary {
+	background: rgba(255, 255, 255, 0.05);
+	padding: 10px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.average-rating {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+    justify-content: center;
+	gap: 10px;
+}
+
+.rating-number {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 32px;
+	font-weight: bold;
+}
+
+.star-icon {
+	color: #ffd700;
+	font-size: 28px;
+}
+
+.rating-value {
+	color: #ffd700;
+}
+
+.rating-scale {
+	color: #ccc;
+	font-size: 24px;
+}
+
+.review-count {
+	color: #ccc;
+	font-size: 16px;
+}
+
+.reviews-section {
+	margin-bottom: 30px;
+}
+
+.no-reviews {
+	text-align: center;
+	padding: 40px;
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 10px;
+	color: #ccc;
+}
+
+.reviews-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.review-item {
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 10px;
+	padding: 20px;
+	border-left: 4px solid #75bf6a;
+}
+
+.review-header {
+	margin-bottom: 15px;
+}
+
+.reviewer-info {
+	display: flex;
+	align-items: flex-start;
+	gap: 15px;
+}
+
+.reviewer-avatar {
+	width: 50px;
+	height: 50px;
+	background: #333;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	font-size: 20px;
+	flex-shrink: 0;
+}
+
+.reviewer-details {
+	flex: 1;
+}
+
+.reviewer-name {
+	font-size: 16px;
+	font-weight: 600;
+	margin: 0 0 8px 0;
+	color: #fff;
+}
+
+.review-meta {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+}
+
+.review-rating {
+	display: flex;
+	gap: 2px;
+}
+
+.star {
+	color: #555;
+	font-size: 14px;
+}
+
+.star.filled {
+	color: #ffd700;
+}
+
+.review-time {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: #999;
+	font-size: 12px;
+}
+
+.review-content {
+	margin-top: 10px;
+}
+
+.review-content p {
+	color: #ddd;
+	line-height: 1.5;
+	margin: 0;
+	font-size: 14px;
+}

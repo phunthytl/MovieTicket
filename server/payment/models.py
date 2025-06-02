@@ -18,16 +18,13 @@ class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     total_price = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=50, default='pending')
-    momo_order_id = models.CharField(max_length=100, null=True, blank=True)
-    momo_trans_id = models.CharField(max_length=100, null=True, blank=True)
-    momo_signature = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Payment #{self.id} - {self.status}"
 
 
-class PaymentSeat(models.Model):
+class Ticket(models.Model):
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE, related_name='tickets')
     seat = models.ForeignKey(Seat, on_delete=models.SET_NULL, null=True)
     showtime = models.ForeignKey(Showtime, on_delete=models.SET_NULL, null=True)

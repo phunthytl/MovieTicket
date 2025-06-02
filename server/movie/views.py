@@ -3,16 +3,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .serializers import *
 from cinema.models import *
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import action
 from django.utils import timezone
 from rest_framework.response import Response
+from payment.models import *
 
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all().order_by('-created_at')
     serializer_class = MovieSerializer
+
     def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
         return []
     
@@ -47,14 +49,42 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all().order_by('name')
     serializer_class = GenreSerializer
     def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
         return []
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all().order_by('-created_at')
-    serializer_class = ReviewSerializer
+
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['movie'] 
+
     def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy']:
-            return [IsAdminUser()]
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated()]
         return []
+    
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return ReviewSerializer
+        return ReviewCreateSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        movie = serializer.validated_data.get('movie')
+
+        # Lấy các ticket user đã mua (payment đã thanh toán)
+        paid_tickets = Ticket.objects.filter(
+            payment__user=user,
+            payment__status='paid',
+            showtime__movie=movie,
+        )
+
+        if not paid_tickets.exists():
+            raise serializers.ValidationError("Bạn cần phải mua vé phim này mới có thể đánh giá.")
+        
+        existing_review = Review.objects.filter(user=user, movie=movie).first()
+        if existing_review:
+            raise serializers.ValidationError("Bạn đã đánh giá phim này rồi.")
+
+        serializer.save(user=user)

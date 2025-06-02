@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta, date
 from rest_framework import serializers
 from .models import *
+from user.serializers import UserSerializer
 from cinema.models import *
+from collections import defaultdict
 
 class SnackSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,9 +11,9 @@ class SnackSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PaymentSeatSerializer(serializers.ModelSerializer):
+class PaymentTicketSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PaymentSeat
+        model = Ticket
         fields = '__all__'
 
 
@@ -22,16 +24,56 @@ class PaymentSnackSerializer(serializers.ModelSerializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
-    tickets = PaymentSeatSerializer(many=True, read_only=True)
     snacks = PaymentSnackSerializer(many=True, read_only=True)
+    user = UserSerializer(read_only=True)
+    tickets = serializers.SerializerMethodField()
+    showtime_end = serializers.SerializerMethodField(read_only = True)
+    movie_id = serializers.SerializerMethodField(read_only = True)
+    movie_name = serializers.SerializerMethodField(read_only = True)
 
     class Meta:
         model = Payment
         fields = '__all__'
 
+    def get_tickets(self, obj):
+        grouped = defaultdict(list)
+        for ticket in obj.tickets.all():
+            key = str(ticket.showtime.id)
+            seat_id = str(ticket.seat.id)
+            grouped[key].append(seat_id)
+        return dict(grouped)
+    
+    def get_showtime_end(self, obj):
+        showtimes = [ticket.showtime for ticket in obj.tickets.all() if ticket.showtime]
+
+        if not showtimes:
+            return None
+        
+        showtime = max(showtimes, key=lambda s: datetime.combine(s.date, s.start_time))
+
+        if showtime and showtime.date and showtime.start_time and showtime.movie and showtime.movie.duration:
+            start_datetime = datetime.combine(showtime.date, showtime.start_time)
+            end_datetime = start_datetime + timedelta(minutes=showtime.movie.duration)
+            return end_datetime.isoformat()
+        
+        return None
+    
+    def get_movie_id(self, obj):
+        ticket = obj.tickets.first()
+        if ticket and ticket.showtime and ticket.showtime.movie:
+            return ticket.showtime.movie.id
+        return None
+    
+    def get_movie_name(self, obj):
+        ticket = obj.tickets.first()
+        if ticket and ticket.showtime and ticket.showtime.movie:
+            return ticket.showtime.movie.name
+        return None
+
 
 class PaymentDetailSerializer(serializers.ModelSerializer):
     seats = serializers.SerializerMethodField()
+    snacks = serializers.SerializerMethodField()
     ticket_total = serializers.SerializerMethodField()
     snack_total = serializers.SerializerMethodField()
     movie_name = serializers.SerializerMethodField()
@@ -41,13 +83,23 @@ class PaymentDetailSerializer(serializers.ModelSerializer):
     end_time = serializers.SerializerMethodField()
     date = serializers.SerializerMethodField()
     room_name = serializers.SerializerMethodField()
+    movie_id = serializers.CharField(source='movie.id', read_only=True)
+    showtime_id = serializers.CharField(source='showtime.id', read_only=True)
 
     class Meta:
         model = Payment
         fields = '__all__'
 
     def get_seats(self, obj):
-        return [ticket.seat.matrix_position for ticket in obj.tickets.all() if ticket.seat]
+        tickets = obj.tickets.all()
+        return [f"{ticket.seat.row}{ticket.seat.column}" for ticket in tickets]
+    
+    def get_snacks(self, obj):
+        snacks = obj.snacks.all()
+        return [
+            f"{snack.snack.name if snack.snack else 'Unknown'} x {snack.quantity}"
+            for snack in snacks
+        ]
 
     def get_ticket_total(self, obj):
         return sum(ticket.seat.price for ticket in obj.tickets.all() if ticket.seat and ticket.seat.price)

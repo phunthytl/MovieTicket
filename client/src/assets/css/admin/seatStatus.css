@@ -1,83 +1,237 @@
-/* ===== Layout ===== */
+/* Container chính */
+.seat-form-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Header showtime */
+.showtime-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.showtime-header h2 {
+  color: white;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Buttons styling */
+.btn-save, .btn-delete, .btn-cancel, .btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #218838, #1ea080);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #dc3545, #e74c3c);
+  color: white;
+}
+
+.btn-delete:hover {
+  background: linear-gradient(135deg, #c82333, #dc2626);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-cancel {
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #5a6268, #495057);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-back {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+}
+
+.btn-back:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Seat grid container */
+.seat-grid-container {
+  background: white;
+  border-radius: 15px;
+  padding: 30px 20px 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow-x: auto;
+}
+
+.seat-grid-container::before {
+  content: "MÀN HÌNH";
+  display: block;
+  text-align: center;
+  background: linear-gradient(135deg, #333, #555);
+  color: white;
+  padding: 10px;
+  margin: -20px -10px 30px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
 .seat-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 20px;
-  }
-  
-  .seat-row {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-  
-  .seat-wrapper {
-    width: 44px;
-    height: 44px;
-    background-color: #e0e0e0; /* nền bạc bao ghế */
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* ===== Ghế cơ bản ===== */
-  .seat {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ccc;
-    background-color: white;
-    border-radius: 6px;
-    transition: 0.2s ease;
-  }
-  
-  /* Hover highlight khi được phép chọn */
-  .seat.cursor-pointer:hover {
-    box-shadow: 0 0 0 2px #0d6efd66;
-  }
-  
-  /* ===== Ghế đã tồn tại ===== */
-  .seat.taken {
-    background-color: #ddd;
-    border-color: #aaa;
-  }
-  
-  /* Ghế đôi đã tồn tại */
-  .seat.taken.double {
-    background-color: #ffb6c1;
-    border-color: #d87093;
-  }
-  
-  /* ===== Ghế đang chọn ===== */
-  .seat.selected-book {
-    background-color: #4caf50; /* xanh đặt */
-    border: 2px solid #388e3c;
-  }
-  
-  .seat.selected-cancel {
-    background-color: #f44336; /* đỏ huỷ */
-    border: 2px solid #c62828;
-  }
-  
-  /* Ghế đôi đang chọn */
-  .seat.double.selected-book {
-    background-color: #66bb6a;
-    border-color: #2e7d32;
-  }
-  
-  .seat.double.selected-cancel {
-    background-color: #ef5350;
-    border-color: #c62828;
-  }
-  
-  /* ===== Con trỏ trạng thái ===== */
-  .cursor-pointer {
-    cursor: pointer;
-  }
-  
-  .cursor-blocked {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-  
+  display: block;
+  text-align: center;
+}
+
+.seat-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.seat-wrapper {
+  position: relative;
+}
+
+/* Seat styling */
+.seat {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.seat:not(.empty)::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 18v3h16v-3H4zM3 8c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2H3z"/></svg>') no-repeat center;
+  background-size: contain;
+  opacity: 0.6;
+}
+
+.seat.can-click:hover {
+  transform: scale(1.1);
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Trạng thái ghế đã đặt */
+.seat.taken {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  border-color: #bd2130;
+  color: white;
+  cursor: not-allowed;
+}
+
+.seat.taken::before {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+/* Ghế được chọn để đặt */
+.seat.selected-book {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  border-color: #1e7e34;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.seat.selected-book::before {
+  filter: brightness(0) invert(1);
+  opacity: 1;
+}
+
+/* Ghế được chọn để hủy */
+.seat.selected-cancel {
+  background: linear-gradient(135deg, #ffc107, #fd7e14);
+  border-color: #d39e00;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.seat.selected-cancel::before {
+  filter: brightness(0) invert(1);
+  opacity: 1;
+}
+
+/* Legend */
+.seat-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.legend-seat {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.legend-available {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.legend-taken {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.legend-selected {
+  background: linear-gradient(135deg, #28a745, #20c997);
+}

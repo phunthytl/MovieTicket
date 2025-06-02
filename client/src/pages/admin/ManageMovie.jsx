@@ -1,4 +1,3 @@
-// pages/admin/ManageMovies.jsx
 import React, { useEffect, useState } from 'react';
 import axiosClient from '../../api/axiosClient';
 import '../../assets/css/admin/admin.css';

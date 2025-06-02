@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
 import axiosClient from '../../api/axiosClient';
-import '../../assets/css/admin/seats.css';
+import '../../assets/css/admin/ManageSeat.css';
 
 export default function ManageSeats() {
   const { id: roomId } = useParams();
@@ -11,20 +11,26 @@ export default function ManageSeats() {
   const [existingSeats, setExistingSeats] = useState([]);
   const [selected, setSelected] = useState(new Set());
   const [editMode, setEditMode] = useState(false);
-  const [rows, setRows] = useState(8);
-  const [cols, setCols] = useState(12);
+
+  const rows = 10; // số dãy ghế (A-J)
+  const cols = 10; // số ghế mỗi dãy (1-10)
+  const rowLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').slice(0, rows);
 
   useEffect(() => {
     fetchSeats();
   }, [roomId]);
 
   const fetchSeats = async () => {
-    const res = await axiosClient.get(`cinemas/seats/by-room/${roomId}/`);
-    setExistingSeats(res.data);
+    try {
+      const res = await axiosClient.get(`cinemas/seats/by-room/${roomId}/`);
+      setExistingSeats(res.data);
+    } catch (err) {
+      console.error('❌ Lỗi khi tải danh sách ghế:', err.response?.data || err.message);
+    }
   };
 
-  const handleClick = (row, col) => {
-    const key = `${row}${col}`;
+  const handleClick = (rowLetter, colNum) => {
+    const key = `${rowLetter}${colNum}`;
     const isTaken = existingSeats.some(seat => seat.matrix_position === key);
 
     if (!editMode && isTaken) return;
@@ -39,14 +45,15 @@ export default function ManageSeats() {
     const selectedArray = Array.from(selected);
 
     const payload = selectedArray.map(pos => {
-      const row = parseInt(pos[0]);
-      const col = parseInt(pos[1]);
+      const match = pos.match(/^([A-Z]+)(\d+)$/);
+      const row = match[1];
+      const col = parseInt(match[2]);
       return {
         id: `${roomId}_${pos}`,
         matrix_position: pos,
         room: roomId,
         row,
-        column: col
+        column: col,
       };
     });
 
@@ -56,7 +63,7 @@ export default function ManageSeats() {
       setSelected(new Set());
       fetchSeats();
     } catch (err) {
-      console.error('❌ Lỗi tạo ghế:', err.response?.data || err.message);
+      console.error('Lỗi tạo ghế:', err.response?.data || err.message);
     }
   };
 
@@ -72,7 +79,7 @@ export default function ManageSeats() {
       setSelected(new Set());
       fetchSeats();
     } catch (err) {
-      console.error('❌ Lỗi xoá ghế:', err.response?.data || err.message);
+      console.error('Lỗi xoá ghế:', err.response?.data || err.message);
     }
   };
 
@@ -87,24 +94,27 @@ export default function ManageSeats() {
       <h2>Quản lý ghế - {roomName}</h2>
 
       <div style={{ marginBottom: 16, display: 'flex', gap: 16 }}>
-        <button onClick={() => {
-          setEditMode(!editMode);
-          setSelected(new Set());
-        }}>
+        <button
+          onClick={() => {
+            setEditMode(!editMode);
+            setSelected(new Set());
+          }}
+        >
           {editMode ? <><FaTimes /> Thoát sửa</> : <><FaEdit /> Sửa ghế</>}
         </button>
       </div>
 
       <div className="seat-grid">
-        {[...Array(rows)].map((_, row) => (
-          <div className="seat-row" key={row}>
-            {[...Array(cols)].map((_, col) => {
-              const key = `${row}${col}`;
+        {rowLetters.map((rowLetter) => (
+          <div className="seat-row" key={rowLetter}>
+            {[...Array(cols)].map((_, colIndex) => {
+              const colNum = colIndex + 1;
+              const key = `${rowLetter}${colNum}`;
               return (
                 <div
-                  key={col}
+                  key={key}
                   className={getSeatClass(key)}
-                  onClick={() => handleClick(row, col)}
+                  onClick={() => handleClick(rowLetter, colNum)}
                 ></div>
               );
             })}

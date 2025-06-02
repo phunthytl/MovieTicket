@@ -1,0 +1,77 @@
+/* ===== Layout ===== */
+.seat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .seat-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  
+  .seat-wrapper {
+    width: 44px;
+    height: 44px;
+    background-color: #e0e0e0; /* nền bạc bao ghế */
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* ===== Ghế cơ bản ===== */
+  .seat {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 6px;
+    transition: 0.2s ease;
+  }
+  
+  /* Hover highlight khi được phép chọn */
+  .seat.cursor-pointer:hover {
+    box-shadow: 0 0 0 2px #0d6efd66;
+  }
+  
+  /* ===== Ghế đã tồn tại ===== */
+  .seat.taken {
+    background-color: #ddd;
+    border-color: #aaa;
+  }
+  
+  /* ===== Ghế đang chọn ===== */
+  .seat.selected-book {
+    background-color: #4caf50; /* xanh đặt */
+    border: 2px solid #388e3c;
+  }
+  
+  .seat.selected-cancel {
+    background-color: #f44336; /* đỏ huỷ */
+    border: 2px solid #c62828;
+  }
+  
+  /* Ghế đôi đang chọn */
+  .seat.double.selected-book {
+    background-color: #66bb6a;
+    border-color: #2e7d32;
+  }
+  
+  .seat.double.selected-cancel {
+    background-color: #ef5350;
+    border-color: #c62828;
+  }
+  
+  /* ===== Con trỏ trạng thái ===== */
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  .cursor-blocked {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  

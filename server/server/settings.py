@@ -195,9 +195,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MOMO_PARTNER_CODE = 'MOMO'
-MOMO_ACCESS_KEY = 'F8BBA842ECF85'
-MOMO_SECRET_KEY = 'K951B6PE1waDMi640xX08PD3vg6EkVlz'
-MOMO_ENDPOINT = 'https://test-payment.momo.vn/v2/gateway/api/create'
-MOMO_REDIRECT_URL = 'http://localhost:3000/payment/success'
-MOMO_IPN_URL = 'http://localhost:8000/api/payments/notify/'
+VNPAY_TMN_CODE = '849X5Z94'
+VNPAY_HASH_SECRET = '3WOGK3TZ5WG05DLD6CB94PHT9NUPY7CZ'
+VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+VNPAY_RETURN_URL = 'http://localhost:3000/payment/vnpay-return'

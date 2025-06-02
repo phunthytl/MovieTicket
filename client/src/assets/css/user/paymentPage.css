@@ -10,7 +10,7 @@
     font-family: 'Segoe UI', sans-serif;
   }
   
-  .ticket-info {
+  .ticket-info-pp {
     background-color: #1e2a3a;
     padding: 24px 32px;
     border-radius: 12px;
@@ -18,26 +18,26 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
   }
   
-  .ticket-info h2 {
+  .ticket-info-pp h2 {
     font-size: 20px;
     color: #4ea1f3;
     margin-bottom: 16px;
   }
   
-  .ticket-info p {
+  .ticket-info-pp p {
     margin: 8px 0;
     font-size: 15px;
     line-height: 1.6;
   }
   
-  .ticket-info hr {
+  .ticket-info-pp hr {
     border: 0;
     height: 1px;
     background: #4ea1f3;
     margin: 20px 0;
   }
   
-  .ticket-info .total {
+  .ticket-info-pp .total {
     font-size: 18px;
     font-weight: bold;
     color: #ffd700;

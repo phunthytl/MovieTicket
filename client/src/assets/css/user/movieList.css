@@ -31,8 +31,8 @@
   object-fit: cover;
 }
 
-.movie-info {
-  padding: 10px 12px 4px;
+.movie-info-container {
+  padding: 10px 10px 4px;
   text-align: center;
 }
 
