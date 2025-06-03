@@ -1,0 +1,72 @@
+.container-register {
+    max-width: 400px;
+    margin: 120px auto 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.container-register h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 24px;
+    color: #333;
+}
+
+.input-group-re {
+    margin-bottom: 16px;
+}
+
+.input-group-re input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group-re input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.btn-re {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-re:hover {
+    background-color: #0056b3;
+}
+
+.register-lg {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.login-redirect {
+    text-align: center;
+    margin-top: 16px;
+    color: #000;
+    font-size: 14px;
+}
+
+.login-redirect a {
+    color: #000;
+    font-weight: 500;
+    display: inline;
+}
+
+.login-redirect a:hover {
+    color: #007bff;
+}

@@ -17,7 +17,7 @@ const PaymentHistory = () => {
         const fetchData = async () => {
             try {
                 const [ticketRes, reviewRes] = await Promise.all([
-                    axiosClient.get("payments/payments/?status=paid", { tokenType: "user" }),
+                    axiosClient.get("payments/payments/user-payments/", { tokenType: "user" }),
                     axiosClient.get("movies/reviews/", { tokenType: "user" }),
                 ]);
                 setTickets(ticketRes.data);

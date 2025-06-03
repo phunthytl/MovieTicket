@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import '../../assets/css/user/booking.css';
 
 export default function BookingPage() {
 	const { movieId, id } = useParams();
 	const navigate = useNavigate();
+    const location = useLocation();
 
 	const [showtime, setShowtime] = useState(null);
 	const [movie, setMovie] = useState(null);
@@ -103,11 +104,18 @@ export default function BookingPage() {
 	const grandTotal = ticketTotal + snackTotal;
 
 	const handleContinue = async () => {
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+            alert('Vui lòng đăng nhập để tiếp tục thanh toán.');
+            navigate('/login', { state: { from: location.pathname } });
+            return;
+        }
+
 		if (selectedSeats.length === 0) {
 			alert('Vui lòng chọn ít nhất 1 ghế!');
 			return;
 		}
-		// Tạo đối tượng bookingData từ các dữ liệu đã chọn
+
 		const bookingData = {
 			showtime: showtime.id,
 			movie: movie.id,
@@ -120,13 +128,9 @@ export default function BookingPage() {
 			snack_total: snackTotal,
 			total_price: grandTotal,
 		};
-		
-		console.log('Booking data gửi đi:', bookingData); 
 
 		try {
 			const res = await axiosClient.post('payments/payments/', bookingData, { tokenType: 'user' });
-
-			localStorage.setItem('bookingData', JSON.stringify(bookingData));
 
 			navigate(`/movies/${bookingData.movie}/payments/${res.data.id}`,{
 				state: {

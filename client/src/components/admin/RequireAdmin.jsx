@@ -4,9 +4,9 @@ import { Navigate } from 'react-router-dom';
 const RequireAdmin = ({ children }) => {
     const adminInfo = JSON.parse(localStorage.getItem('adminInfo'));
     const isLoggedIn = !!localStorage.getItem('adminToken');
-    const isAdmin = adminInfo?.isAdmin;
+    const is_staff = adminInfo?.is_staff;
   
-    if (isLoggedIn && isAdmin) {
+    if (isLoggedIn && is_staff) {
         return children;
     }
   

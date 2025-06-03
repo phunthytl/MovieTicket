@@ -38,6 +38,7 @@ import ManageReviews from '../pages/admin/ManageReview';
 import MovieReviewsPage from '../pages/user/ReviewPage';
 import UserProfilePage from '../pages/user/Profile';
 import CinemasPage from '../pages/user/CinemasPage';
+import Register from '../pages/user/Register';
 
 export default function AppRouter() {
 
@@ -46,7 +47,7 @@ export default function AppRouter() {
             <Routes>
                 {/* Trang đăng nhập admin */}
                 <Route path="/admin/login" element={<AdminLogin />} />
-                {/* Các route của trang Admin, yêu cầu đăng nhập và quyền admin */}
+                {/* Các route của trang Admin */}
                 <Route path="/admin/*" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
                     <Route index element={<Dashboard />} />
                     <Route path="movies" element={<ManageMovies />} />
@@ -80,10 +81,11 @@ export default function AppRouter() {
                     <Route path="reviews" element={<ManageReviews />} />
                 </Route>
 
-                {/* Các route cho người dùng, không yêu cầu đăng nhập */}
-                <Route path="/login" element={<Login />} />
+                {/* Route người dùng*/}
                 <Route path="/*" element={<UserLayout />}>
                     <Route index element={<Home />} />
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
                     <Route path="profile" element={<UserProfilePage />} />
                     <Route path="movies" element={<MovieListPage />} />
                     <Route path="movies/:id" element={<MovieDetailPage />} />

@@ -22,7 +22,7 @@ export default function VnPayReturn() {
             alert('Thanh toán thất bại hoặc không hợp lệ!');
             navigate('/');
         });
-  }, [navigate, location]);
+    }, [navigate, location]);
 
-  return <div>Đang xử lý kết quả thanh toán...</div>;
+    return <div>Đang xử lý kết quả thanh toán...</div>;
 }

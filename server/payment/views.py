@@ -119,7 +119,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='user-payments', permission_classes=[IsAuthenticated])
     def user_payments(self, request):
         payments = Payment.objects.filter(user=request.user, status='paid').order_by('-created_at')
-        serializer = PaymentDetailSerializer(payments, many=True)
+        serializer = PaymentSerializer(payments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])

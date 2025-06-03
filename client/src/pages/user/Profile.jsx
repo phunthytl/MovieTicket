@@ -106,7 +106,7 @@ export default function UserProfilePage() {
 			await axiosClient.post('users/users/changePassword/', {
 				old_password: passwordForm.current_password,
 				new_password: passwordForm.new_password
-			});
+			}, { tokenType: 'user' });
 			setPasswordForm({ current_password: '', new_password: '', confirm_password: '' });
 			alert('Đổi mật khẩu thành công!');
 		} catch {
