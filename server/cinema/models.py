@@ -43,31 +43,23 @@ class Seat(models.Model):
 
     def save(self, *args, **kwargs):
         try:
-            same_room_rows = Seat.objects.filter(room=self.room, row__isnull=False)\
-                                         .values_list('row', flat=True).distinct()
-            sorted_rows = sorted(set(same_room_rows), key=lambda r: r.upper())
-
-            # Nếu row hiện tại nằm trong danh sách
-            if self.row and self.row.upper() in sorted_rows:
-                row_index = sorted_rows.index(self.row.upper())
-                total_rows = len(sorted_rows)
-
-                if row_index <= 1:
-                    self.price = 50000
-                elif row_index >= total_rows - 2:
-                    self.price = 90000
-                else:
-                    self.price = 70000
+            predefined_rows = [chr(i) for i in range(ord('A'), ord('K'))]  # A-J
+            row_upper = self.row.upper() if self.row else ''
+            
+            if row_upper in ['A', 'B']:
+                self.price = 50000
+            elif row_upper in predefined_rows[-2:]:  # I, J
+                self.price = 90000
             else:
                 self.price = 70000
-        except:
+        except Exception as e:
+            print(f"Lỗi khi tính giá ghế: {e}")
             self.price = 70000
 
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         return f"Seat {self.room.name}"
-
 
 class Showtime(models.Model):
     id = models.CharField(primary_key=True, max_length=20)

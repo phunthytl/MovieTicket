@@ -29,8 +29,9 @@ export default function MovieForm({ mode }) {
     useEffect(() => {
         axiosClient.get('movies/genres/')
         .then(res => {
-            const genres = Array.isArray(res) ? res : res?.data || [];
-            setGenreOptions(Array.isArray(genres) ? genres : []);
+            // Có thể res.data hoặc res là mảng
+            const genres = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
+            setGenreOptions(genres);
         })
         .catch(err => {
             console.error('Lỗi khi load thể loại:', err);
@@ -42,58 +43,96 @@ export default function MovieForm({ mode }) {
         if ((isEdit || isView) && id) {
         axiosClient.get(`movies/movies/${id}/`).then(res => {
             const data = res.data;
-            // Ép tất cả id trong genres thành chuỗi
-            data.genres = (data.genres || []).map(g => String(g));
-            setFormData(data);
+
+            data.genres = (data.genres || []).map(g => String(g.id));
+
+            setFormData({
+                id: data.id || '',
+                name: data.name || '',
+                duration: data.duration !== null && data.duration !== undefined ? String(data.duration) : '',
+                status: data.status || '',
+                age_rating: data.age_rating || '',
+                description: data.description || '',
+                country: data.country || '',
+                language: data.language || '',
+                trailer: data.trailer || '',
+                poster: data.poster || null,
+                genres: data.genres || [],
+            });
+        }).catch(err => {
+            console.error('Lỗi khi tải phim:', err);
         });
         }
-    }, [id, isEdit, isView]);
+
+        if (isCreate) {
+            setFormData({
+                id: '',
+                name: '',
+                duration: '',
+                status: '',
+                age_rating: '',
+                description: '',
+                country: '',
+                language: '',
+                trailer: '',
+                poster: null,
+                genres: []
+            });
+        }
+    }, [id, isEdit, isView, isCreate]);
 
     const handleChange = (e) => {
         const { name, value, files, type } = e.target;
+
         if (type === 'file') {
-        setFormData({ ...formData, [name]: files[0] });
-        } else {
-        setFormData({ ...formData, [name]: value });
+            setFormData(prev => ({ ...prev, [name]: files[0] }));
+        } 
+        else if (name === 'duration') {
+            if (/^\d*$/.test(value)) {
+                setFormData(prev => ({ ...prev, [name]: value }));
+            }
+        } 
+        else {
+            setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
-        const data = new FormData();
+            const data = new FormData();
 
-        Object.entries(formData).forEach(([key, value]) => {
-            if (key === 'genres') {
-            value.forEach((genre) => data.append('genre_ids', genre));
-            } else if (key === 'poster') {
-            if (value instanceof File) {
-                data.append('poster', value);
-            }
-            } else if (value) {
-            data.append(key, value);
-            }
-        });
-
-        if (isEdit) {
-            await axiosClient.patch(`movies/movies/${formData.id}/`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            Object.entries(formData).forEach(([key, value]) => {
+                if (key === 'genres') {
+                value.forEach(genreId => data.append('genre_ids', genreId));
+                } else if (key === 'poster') {
+                if (value instanceof File) {
+                    data.append('poster', value);
+                }
+                } else if (value !== '' && value !== null && value !== undefined) {
+                data.append(key, value);
+                }
             });
-        } else if (isCreate) {
-            await axiosClient.post('movies/movies/', data, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            });
-        }
 
-        navigate('/admin/movies');
+            if (isEdit) {
+                await axiosClient.patch(`movies/movies/${formData.id}/`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                });
+            } else if (isCreate) {
+                await axiosClient.post('movies/movies/', data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                });
+            }
+
+            navigate('/admin/movies');
         } catch (error) {
         console.error('Lỗi khi lưu phim:', error);
         if (error.response && error.response.data) {
-            console.log('Chi tiết lỗi từ backend:', error.response.data);
             alert('Lỗi khi gửi dữ liệu:\n' + JSON.stringify(error.response.data, null, 2));
         }
         }
@@ -102,25 +141,50 @@ export default function MovieForm({ mode }) {
     return (
         <div className="movie-form-container">
         <form className="movie-form" onSubmit={handleSubmit}>
+
             <div className="movie-form-left">
             <div className="full-width">
                 <label>ID</label>
-                <input name="id" value={formData.id} onChange={handleChange} disabled={!isCreate} />
+                <input
+                name="id"
+                value={formData.id}
+                onChange={handleChange}
+                disabled={!isCreate}
+                required
+                />
             </div>
 
             <div className="full-width">
                 <label>Tên phim</label>
-                <input name="name" value={formData.name} onChange={handleChange} disabled={isView} />
+                <input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                disabled={isView}
+                required
+                />
             </div>
 
             <div>
-                <label>Thời lượng</label>
-                <input name="duration" value={formData.duration} onChange={handleChange} disabled={isView} />
+                <label>Thời lượng (phút)</label>
+                <input
+                name="duration"
+                value={formData.duration}
+                onChange={handleChange}
+                disabled={isView}
+                inputMode="numeric"
+                pattern="\d*"
+                />
             </div>
 
             <div>
                 <label>Giới hạn độ tuổi</label>
-                <select name="age_rating" value={formData.age_rating} onChange={handleChange} disabled={isView}>
+                <select
+                name="age_rating"
+                value={formData.age_rating}
+                onChange={handleChange}
+                disabled={isView}
+                >
                 <option value="">-- Chọn độ tuổi --</option>
                 <option value="P">P</option>
                 <option value="13+">13+</option>
@@ -131,17 +195,32 @@ export default function MovieForm({ mode }) {
 
             <div>
                 <label>Ngôn ngữ</label>
-                <input name="language" value={formData.language} onChange={handleChange} disabled={isView} />
+                <input
+                name="language"
+                value={formData.language}
+                onChange={handleChange}
+                disabled={isView}
+                />
             </div>
 
             <div>
                 <label>Quốc gia</label>
-                <input name="country" value={formData.country} onChange={handleChange} disabled={isView} />
+                <input
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                disabled={isView}
+                />
             </div>
 
             <div className="full-width">
                 <label>Mô tả</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} disabled={isView} />
+                <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                disabled={isView}
+                />
             </div>
 
             <div className="full-width">
@@ -149,7 +228,7 @@ export default function MovieForm({ mode }) {
                 {isView ? (
                 <div className="readonly-value">
                     {genreOptions
-                    .filter(g => formData.genres.includes(g.id))
+                    .filter(g => formData.genres.includes(String(g.id)))
                     .map(g => g.name)
                     .join(', ') || 'Không có'}
                 </div>
@@ -159,8 +238,8 @@ export default function MovieForm({ mode }) {
                     multiple
                     value={formData.genres}
                     onChange={(e) => {
-                    const selected = Array.from(e.target.selectedOptions).map(option => option.value);
-                    setFormData({ ...formData, genres: selected });
+                    const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+                    setFormData(prev => ({ ...prev, genres: selected }));
                     }}
                 >
                     {genreOptions.map((genre) => (
@@ -174,22 +253,34 @@ export default function MovieForm({ mode }) {
             <div className="movie-form-right">
             <div className="image-preview">
                 {formData.poster ? (
-                <img
-                    src={typeof formData.poster === 'string' ? formData.poster : URL.createObjectURL(formData.poster)}
-                    alt="Poster"
-                />
+                typeof formData.poster === 'string' ? (
+                    <img src={formData.poster} alt="Poster" />
+                ) : (
+                    <img src={URL.createObjectURL(formData.poster)} alt="Poster" />
+                )
                 ) : (
                 <span>Chưa có ảnh</span>
                 )}
             </div>
 
             {!isView && (
-                <input type="file" name="poster" onChange={handleChange} className="upload-btn" />
+                <input
+                type="file"
+                name="poster"
+                accept="image/*"
+                onChange={handleChange}
+                className="upload-btn"
+                />
             )}
 
             <div>
                 <label>Trạng thái</label>
-                <select name="status" value={formData.status} onChange={handleChange} disabled={isView}>
+                <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                disabled={isView}
+                >
                 <option value="">-- Chọn trạng thái --</option>
                 <option value="Đang chiếu">Đang chiếu</option>
                 <option value="Sắp chiếu">Sắp chiếu</option>
@@ -198,13 +289,24 @@ export default function MovieForm({ mode }) {
 
             <div>
                 <label>Trailer</label>
-                <input name="trailer" value={formData.trailer} onChange={handleChange} disabled={isView} />
+                <input
+                name="trailer"
+                value={formData.trailer}
+                onChange={handleChange}
+                disabled={isView}
+                />
             </div>
 
             {!isView && (
                 <div className="form-buttons">
                 <button type="submit" className="save-btn">Lưu</button>
-                <button type="button" className="cancel-btn" onClick={() => navigate('/admin/movies')}>Quay lại</button>
+                <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => navigate('/admin/movies')}
+                >
+                    Quay lại
+                </button>
                 </div>
             )}
             </div>

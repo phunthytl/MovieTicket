@@ -152,16 +152,16 @@ export default function BookingPage() {
 		<div className="booking-container">
 			{/* Header */}
 			<div className="booking-header">
-				<h1>{movie.title}</h1>
+				<h1>{movie.name}</h1>
 				<div className="showtime-info">
 					<span>{showtime.cinema_name}</span>
 					<span>{showtime.room_name}</span>
-					<span>{showtime.date} - {showtime.time}</span>
+					<span>{showtime.date}: {showtime.start_time} ~ {showtime.end_time}</span>
 				</div>
 			</div>
 
 			<div className="booking-content">
-				{/* Bên trái - Chọn ghế */}
+				{/* Chọn ghế */}
 				<div className="seat-selection">
 					<h3>Chọn ghế ngồi</h3>
 
@@ -216,7 +216,7 @@ export default function BookingPage() {
 					</div>
 				</div>
 
-				{/* Bên phải - Chọn đồ ăn */}
+				{/* Chọn đồ ăn */}
 				<div className="snack-selection">
 					<h3>Chọn đồ ăn</h3>
 

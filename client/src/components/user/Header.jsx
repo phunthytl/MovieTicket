@@ -126,7 +126,7 @@ export default function Header() {
             <div className="header-bottom">
                 <div className="left-nav">
                     <NavLink to="/" className="nav-highlight">
-                        <FaTicketAlt /> Đặt vé ngay
+                        <FaTicketAlt /> Đặt vé
                     </NavLink>
                     <NavLink to="/cinemas"><FaMapMarkedAlt /> Chọn rạp</NavLink>
                     <NavLink to="/showtimes"><FaCalendarAlt /> Lịch chiếu</NavLink>

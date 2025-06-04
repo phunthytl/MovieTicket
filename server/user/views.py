@@ -26,16 +26,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'create':
-            return [AllowAny()]  # Bất kỳ ai cũng có thể tạo tài khoản
+            return [AllowAny()]
         elif self.action in ['list', 'destroy']:
-            return [IsAdminUser()]  # Chỉ admin được xóa
+            return [IsAdminUser()]
         else:
-            return [IsAuthenticated()]  # Các hành động còn lại yêu cầu đăng nhập
+            return [IsAuthenticated()]
     
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return UserSerializerWithToken
-        return UserSerializer
+    # def get_serializer_class(self):
+    #     if self.action == 'create':
+    #         return UserSerializerWithToken
+    #     return UserSerializer
 
     def perform_create(self, serializer):
         data = self.request.data

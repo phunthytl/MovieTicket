@@ -57,7 +57,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all().order_by('-created_at')
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['movie'] 
+    filterset_fields = ['movie', 'user'] 
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:

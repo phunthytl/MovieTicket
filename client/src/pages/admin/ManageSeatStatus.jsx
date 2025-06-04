@@ -33,7 +33,6 @@ export default function ManageSeatStatus() {
 		}
 	};
 
-	// Parse matrix_position (row + col) theo dữ liệu mới (row: "A", col: 1-based)
 	const parseMatrix = () => {
 		const matrix = [];
 		seats.forEach(seat => {

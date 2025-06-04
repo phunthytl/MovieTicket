@@ -2,13 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import '../../assets/css/user/Profile.css';
-import {
-	FaUser, FaCamera, FaEdit, FaLock, FaSave, FaTimes,
-	FaEye, FaEyeSlash, FaHome, FaChevronRight, FaEnvelope,
-	FaPhone
-} from 'react-icons/fa';
+import { FaUser, FaCamera, FaEdit, FaLock, FaSave, FaTimes,	FaEye, FaEyeSlash, FaHome, FaChevronRight, FaEnvelope, FaPhone } from 'react-icons/fa';
 
-// ... (import và setup ban đầu như cũ)
 
 export default function UserProfilePage() {
 	const navigate = useNavigate();

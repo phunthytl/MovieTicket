@@ -111,3 +111,157 @@ class SeatStatusViewSet(viewsets.ModelViewSet):
         queryset = SeatStatus.objects.filter(showtime_id=showtime_id)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+from rest_framework.decorators import api_view
+from django.utils.dateparse import parse_date
+from django.db.models import Sum, Count
+from django.db.models import Q
+from payment.models import *
+
+@api_view(['GET'])
+def revenue_summary(request):
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    
+    date_filter = Q()
+    if start_date_str:
+        start_date = parse_date(start_date_str)
+        if start_date:
+            date_filter &= Q(created_at__date__gte=start_date)
+    if end_date_str:
+        end_date = parse_date(end_date_str)
+        if end_date:
+            date_filter &= Q(created_at__date__lte=end_date)
+
+    total_revenue = Payment.objects.filter(
+        date_filter,
+        status='paid'
+    ).aggregate(total=Sum('total_price'))['total'] or 0
+    
+    total_orders = Payment.objects.filter(
+        date_filter,
+        status='paid'
+    ).count()
+    
+    return Response({
+        'status': 'success',
+        'data': {
+            'total_revenue': total_revenue,
+            'total_orders': total_orders,
+            'average_order_value': total_revenue / total_orders if total_orders > 0 else 0
+        }
+    })
+
+
+
+
+@api_view(['GET'])
+def revenue_by_cinema_group(request):
+    """API lấy doanh thu theo cụm rạp (lọc theo ngày, bỏ giờ)"""
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    
+    date_filter = Q()
+    if start_date:
+        date_filter &= Q(created_at__date__gte=start_date)
+    if end_date:
+        date_filter &= Q(created_at__date__lte=end_date)
+    
+    cinema_groups = CinemaCluster.objects.all()
+    result = []
+    
+    for group in cinema_groups:
+        cinemas = group.cinema_set.all()
+        
+        ticket_revenue = Payment.objects.filter(
+            date_filter,
+            status='paid',
+            tickets__showtime__cinema__in=cinemas
+        ).aggregate(total=Sum('total_price'))['total'] or 0
+        
+        snack_revenue = Payment.objects.filter(
+            date_filter,
+            status='paid',
+            snacks__isnull=False,
+            tickets__showtime__cinema__in=cinemas
+        ).aggregate(total=Sum('total_price'))['total'] or 0
+        
+        total_orders = Payment.objects.filter(
+            date_filter,
+            status='paid',
+            tickets__showtime__cinema__in=cinemas
+        ).distinct().count()
+        
+        result.append({
+            'group_id': group.id,
+            'group_name': group.name,
+            'total_revenue': ticket_revenue,
+            'total_orders': total_orders,
+            'cinema_count': cinemas.count()
+        })
+    
+    return Response({
+        'status': 'success',
+        'data': result
+    })
+
+@api_view(['GET'])
+def revenue_by_cinema(request, group_id):
+    """API lấy doanh thu theo từng rạp trong cụm (lọc theo ngày, bỏ giờ)"""
+    try:
+        cinema_group = CinemaCluster.objects.get(id=group_id)
+    except CinemaCluster.DoesNotExist:
+        return Response({
+            'status': 'error',
+            'message': 'Cinema group not found'
+        }, status=404)
+    
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    
+    date_filter = Q()
+    if start_date:
+        date_filter &= Q(created_at__date__gte=start_date)
+    if end_date:
+        date_filter &= Q(created_at__date__lte=end_date)
+    
+    cinemas = cinema_group.cinema_set.all()
+    result = []
+    
+    for cinema in cinemas:
+        ticket_revenue = Payment.objects.filter(
+            date_filter,
+            status='paid',
+            tickets__showtime__cinema=cinema
+        ).aggregate(total=Sum('total_price'))['total'] or 0
+        
+        tickets_sold = Ticket.objects.filter(
+            payment__status='paid',
+            payment__created_at__date__gte=start_date if start_date else None,
+            payment__created_at__date__lte=end_date if end_date else None,
+            showtime__cinema=cinema
+        ).count()
+        
+        showtime_filter = Q(cinema=cinema)
+        if start_date and end_date:
+            showtime_filter &= Q(date__range=[start_date, end_date])
+        
+        showtimes_count = Showtime.objects.filter(showtime_filter).count()
+        
+        result.append({
+            'cinema_id': cinema.id,
+            'cinema_name': cinema.name,
+            'cinema_address': cinema.address,
+            'total_revenue': ticket_revenue,
+            'tickets_sold': tickets_sold,
+            'showtimes_count': showtimes_count
+        })
+    
+    return Response({
+        'status': 'success',
+        'group_name': cinema_group.name,
+        'data': result
+    })
+
+

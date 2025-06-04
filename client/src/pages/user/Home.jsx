@@ -5,7 +5,6 @@ import axiosClient from '../../api/axiosClient';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/user/user.css';
 
-// Import ảnh banner từ thư mục assets/images
 import banner1 from '../../assets/images/1.jpg';
 import banner2 from '../../assets/images/2.jpg';
 import banner3 from '../../assets/images/3.jpg';
@@ -17,11 +16,9 @@ export default function Home() {
     const [slideIndex, setSlideIndex] = useState(0);
     const navigate = useNavigate();
 
-    // Danh sách ảnh banner lấy từ assets
     const banners = [banner1, banner2, banner3];
 
     useEffect(() => {
-        // Lấy dữ liệu phim từ API cho phần danh sách phim
         axiosClient.get(`movies/movies?status=${encodeURIComponent('Đang chiếu')}`)
         .then((res) => setNowShowing(res.data));
 
@@ -30,7 +27,6 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        // Tự động chuyển ảnh slider mỗi 4 giây
         const interval = setInterval(() => {
         setSlideIndex((prev) => (prev + 1) % banners.length);
         }, 4000);

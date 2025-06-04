@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import '../../assets/css/user/movieDetail.css';
-import {
-	FaClock, FaGlobeAsia, FaTag, FaStar, FaUser, FaFilm,
-	FaLanguage, FaHome, FaChevronRight
-} from 'react-icons/fa';
+import { FaClock, FaGlobeAsia, FaTag, FaStar, FaUser, FaFilm, FaLanguage, FaHome, FaChevronRight } from 'react-icons/fa';
 import { getNext7Days } from '../../utils/dateUtils';
 
 export default function MovieDetailPage() {
@@ -18,7 +15,6 @@ export default function MovieDetailPage() {
 	const [cinemaChains, setCinemaChains] = useState([]);
 	const [selectedChain, setSelectedChain] = useState('all');
 	const [selectedDate, setSelectedDate] = useState(null);
-	const [showAllCinemas, setShowAllCinemas] = useState(false);
 
 	useEffect(() => {
 		axiosClient.get(`movies/movies/${id}/`).then(res => setMovie(res.data));
@@ -50,18 +46,8 @@ export default function MovieDetailPage() {
 		return matchCluster && hasShowtime;
 	});
 
-	const displayedCinemas = showAllCinemas ? filteredCinemas : filteredCinemas.slice(0, 5);
-
 	const getShowtimesForCinema = (cinemaId) =>
 		showtimes.filter(st => st.cinema === cinemaId);
-
-	const calcEndTime = (start, duration) => {
-		const [h, m] = start.split(':').map(Number);
-		const total = h * 60 + m + duration;
-		const endH = Math.floor(total / 60) % 24;
-		const endM = total % 60;
-		return `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-	};
 
 	const handleShowtimeClick = (showtime) => {
 		navigate(`/movies/${id}/booking/${showtime.id}`);
@@ -84,7 +70,6 @@ export default function MovieDetailPage() {
 			<div className="movie-info-section">
 				<div className="poster-container">
 					<img src={movie.poster} alt={movie.name} className="poster" />
-					<div className="play-button">▶</div>
 				</div>
 				<div className="info">
 					<h2>{movie.name}</h2>
@@ -135,7 +120,6 @@ export default function MovieDetailPage() {
 						);
 					})}
 				</div>
-				{/* Bỏ phần location dropdown */}
 			</div>
 
 			{/* CINEMA LIST */}
@@ -146,7 +130,7 @@ export default function MovieDetailPage() {
 					</div>
 				) : (
 					<>
-						{displayedCinemas.map(cinema => (
+						{filteredCinemas.map(cinema => (
 							<div key={cinema.id} className="cinema">
 								<h4>{cinema.name}</h4>
 								<p>{cinema.address}</p>
@@ -157,16 +141,12 @@ export default function MovieDetailPage() {
 											className="showtime-btn"
 											onClick={() => handleShowtimeClick(st)}
 										>
-											{st.start_time.slice(0, 5)} ~ {calcEndTime(st.start_time, movie.duration)}
+											{st.start_time.slice(0, 5)} ~ {st.end_time.slice(0, 5)}
 										</button>
 									))}
 								</div>
 							</div>
 						))}
-
-						{!showAllCinemas && filteredCinemas.length > 5 && (
-							<button className="see-more" onClick={() => setShowAllCinemas(true)}>Xem thêm</button>
-						)}
 					</>
 				)}
 			</div>

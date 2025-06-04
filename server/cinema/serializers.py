@@ -19,9 +19,14 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SeatSerializer(serializers.ModelSerializer):
+    matrix_position = serializers.SerializerMethodField()
+
     class Meta:
         model = Seat
-        fields = '__all__'
+        fields = "__all__"
+
+    def get_matrix_position(self, obj):
+        return f"{obj.row}{obj.column}"
 
 class ShowtimeSerializer(serializers.ModelSerializer):
     movie_name = serializers.CharField(source='movie.name', read_only=True)
@@ -77,3 +82,18 @@ class SeatStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = SeatStatus
         fields = '__all__'
+
+class CinemaGroupRevenueSerializer(serializers.Serializer):
+    group_id = serializers.CharField()
+    group_name = serializers.CharField()
+    total_revenue = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_orders = serializers.IntegerField()
+    cinema_count = serializers.IntegerField()
+
+class CinemaRevenueSerializer(serializers.Serializer):
+    cinema_id = serializers.CharField()
+    cinema_name = serializers.CharField()
+    cinema_address = serializers.CharField()
+    total_revenue = serializers.DecimalField(max_digits=10, decimal_places=2)
+    tickets_sold = serializers.IntegerField()
+    showtimes_count = serializers.IntegerField()

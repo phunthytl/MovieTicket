@@ -8,8 +8,8 @@ import SearchAndSort from '../../components/admin/SearchAndSort';
 export default function ManageMovies() {
     const [movies, setMovies] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortKey, setSortKey] = useState(null);
-    const [sortOrder, setSortOrder] = useState('asc');
+    const [sortKey, setSortKey] = useState('id');
+    const [sortOrder, setSortOrder] = useState('desc');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -75,7 +75,8 @@ export default function ManageMovies() {
             sortOrder={sortOrder}
             onSort={handleSort}
             columns={[
-            { key: 'name', label: 'Tên phim' },
+            { key: 'id', label: 'Mã phim'},
+            { key: 'name', label: 'Tên phim' }
             ]}
         />
 

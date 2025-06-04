@@ -7,7 +7,6 @@ export default function MovieListPage() {
     const [movies, setMovies] = useState([]);
     const [searchParams] = useSearchParams();
 
-    // Lấy status từ URL và giải mã (decode)
     let rawStatus = searchParams.get('status') || 'Đang chiếu';
     rawStatus = decodeURIComponent(rawStatus);
 

@@ -1,7 +1,7 @@
 /* Container chính */
 .booking-container {
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 120px 0 auto;
     padding: 20px;
     background-color: #f8f9fa;
     min-height: 100vh;

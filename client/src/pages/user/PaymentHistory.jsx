@@ -13,12 +13,15 @@ const PaymentHistory = () => {
     const [reviewModal, setReviewModal] = useState(false);
     const [reviewTicket, setReviewTicket] = useState(null);
 
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const userId = userInfo?.id;
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [ticketRes, reviewRes] = await Promise.all([
                     axiosClient.get("payments/payments/user-payments/", { tokenType: "user" }),
-                    axiosClient.get("movies/reviews/", { tokenType: "user" }),
+                    axiosClient.get(`movies/reviews/?user=${userId}`),
                 ]);
                 setTickets(ticketRes.data);
                 setReviews(reviewRes.data || []);

@@ -13,7 +13,6 @@ export default function RoomForm({ mode = 'create' }) {
         id: '',
         name: '',
         type: '',
-        seat_count: '',
         status: ''
     });
 
@@ -24,7 +23,6 @@ export default function RoomForm({ mode = 'create' }) {
             id: res.data.id,
             name: res.data.name || '',
             type: res.data.type || '',
-            seat_count: res.data.seat_count || '',
             status: res.data.status || ''
             });
         });
@@ -42,7 +40,6 @@ export default function RoomForm({ mode = 'create' }) {
         const data = new FormData();
         data.append('name', formData.name);
         data.append('type', formData.type);
-        data.append('seat_count', formData.seat_count);
         data.append('status', formData.status);
         data.append('cinema', cinemaId);
         if (mode === 'create') data.append('id', formData.id);
@@ -106,17 +103,6 @@ export default function RoomForm({ mode = 'create' }) {
                 value={formData.type}
                 onChange={handleChange}
                 placeholder="Nhập loại phòng"
-                />
-            </div>
-            <div>
-                <label htmlFor="seat_count">Số ghế</label>
-                <input
-                id="seat_count"
-                type="number"
-                name="seat_count"
-                value={formData.seat_count}
-                onChange={handleChange}
-                placeholder="Nhập số ghế"
                 />
             </div>
             <div>

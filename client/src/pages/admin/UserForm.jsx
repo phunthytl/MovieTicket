@@ -68,7 +68,7 @@ export default function UserForm({ mode = 'create' }) {
 					headers: { 'Content-Type': 'multipart/form-data' },
 				});
 			} else {
-				await axiosClient.post('users/', data, {
+				await axiosClient.post('users/users/', data, {
 					headers: { 'Content-Type': 'multipart/form-data' },
 				});
 			}

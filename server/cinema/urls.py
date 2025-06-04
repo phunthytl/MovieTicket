@@ -13,4 +13,7 @@ router.register(r'seat-status', SeatStatusViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('revenue/cinema-groups/', revenue_by_cinema_group, name='revenue_by_cinema_group'),
+    path('revenue/cinema-groups/<str:group_id>/cinemas/', revenue_by_cinema, name='revenue_by_cinema'),
+    path('revenue/summary/', revenue_summary, name='revenue_summary'),
 ]
