@@ -55,7 +55,7 @@ class SeatViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class ShowtimeViewSet(viewsets.ModelViewSet):
-    queryset = Showtime.objects.all()
+    queryset = Showtime.objects.all().order_by('date', 'start_time')
     serializer_class = ShowtimeSerializer
 
     def get_permissions(self):

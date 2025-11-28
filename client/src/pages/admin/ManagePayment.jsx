@@ -46,14 +46,12 @@ export default function ManagePayments() {
     };
 
     const handleChangeStatus = async (payment) => {
-        // Nếu trạng thái là canceled thì không cho đổi
-        if (payment.status === 'canceled') {
-            alert('Không thể thay đổi trạng thái của thanh toán đã bị hủy.');
+        if (payment.status !== 'pending') {
+            alert('Chỉ có thể đổi trạng thái từ "pending" sang "paid".');
             return;
         }
 
-        // Chuyển trạng thái từ pending -> paid, hoặc ngược lại
-        const newStatus = payment.status === 'pending' ? 'paid' : 'pending';
+        const newStatus = 'paid';
 
         if (window.confirm(`Bạn có chắc muốn đổi trạng thái sang "${newStatus}"?`)) {
             try {
@@ -67,7 +65,6 @@ export default function ManagePayments() {
         }
     };
     
-    // Lọc và sắp xếp
     const filteredAndSorted = [...payments]
         .filter(p =>
         p.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
