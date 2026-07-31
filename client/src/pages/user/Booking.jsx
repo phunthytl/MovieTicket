@@ -101,7 +101,25 @@ export default function BookingPage() {
 		const snack = snacks.find(s => s.id === snackId);
 		return sum + (snack ? snack.price * quantity : 0);
 	}, 0);
-	const grandTotal = ticketTotal + snackTotal;
+	const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+	const vipLevel = userInfo?.vip_level || 0;
+
+	let vipDiscountRate = 0;
+	let vipTierName = '';
+	if (vipLevel === 1) {
+		vipDiscountRate = 0.05;
+		vipTierName = 'Bạc';
+	} else if (vipLevel === 2) {
+		vipDiscountRate = 0.10;
+		vipTierName = 'Vàng';
+	} else if (vipLevel === 3) {
+		vipDiscountRate = 0.15;
+		vipTierName = 'Kim Cương';
+	}
+
+	const subtotal = ticketTotal + snackTotal;
+	const vipDiscount = Math.floor(subtotal * vipDiscountRate);
+	const grandTotal = subtotal - vipDiscount;
 
 	const handleContinue = async () => {
         const token = localStorage.getItem('userToken');
@@ -266,6 +284,12 @@ export default function BookingPage() {
 						<div className="price-row">
 							<span>Đồ ăn & nước uống:</span>
 							<span>{snackTotal.toLocaleString()}đ</span>
+						</div>
+					)}
+					{vipDiscount > 0 && (
+						<div className="price-row vip-discount">
+							<span>Chiết khấu VIP ({vipTierName} -{vipDiscountRate * 100}%):</span>
+							<span style={{ color: '#ffe066', fontWeight: 'bold' }}>-{vipDiscount.toLocaleString()}đ</span>
 						</div>
 					)}
 					<div className="price-row total">

@@ -1,0 +1,20 @@
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django local DB
+db.sqlite3
+
+# Node modules (for client)
+client/node_modules/
+client/build/
+client/.env
+
+# OS files
+.DS_Store
+Thumbs.db

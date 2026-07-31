@@ -10,21 +10,26 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env
+dotenv.load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0-qedia6a@za6b%@!$ovv^2n3dubaqyz4%+m(xuwwjuk^f8=u8'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-0-qedia6a@za6b%@!$ovv^2n3dubaqyz4%+m(xuwwjuk^f8=u8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -133,11 +138,11 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'TicketMovie',
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME', 'TicketMovie'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', '123456'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -195,7 +200,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-VNPAY_TMN_CODE = '849X5Z94'
-VNPAY_HASH_SECRET = '3WOGK3TZ5WG05DLD6CB94PHT9NUPY7CZ'
-VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
-VNPAY_RETURN_URL = 'http://localhost:3000/payment/vnpay-return'
+VNPAY_TMN_CODE = os.getenv('VNPAY_TMN_CODE', '')
+VNPAY_HASH_SECRET = os.getenv('VNPAY_HASH_SECRET', '')
+VNPAY_URL = os.getenv('VNPAY_URL', 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html')
+VNPAY_RETURN_URL = os.getenv('VNPAY_RETURN_URL', 'http://localhost:3000/payment/vnpay-return')
+
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')

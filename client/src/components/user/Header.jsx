@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaTicketAlt, FaMapMarkedAlt, FaCalendarAlt, FaUser, FaClock, FaInfoCircle, FaSearch, FaSignOutAlt, FaChevronDown, FaFilm } from 'react-icons/fa';
-import '../../assets/css/user/Header.css';
+import { FaTicketAlt, FaMapMarkedAlt, FaCalendarAlt, FaUser, FaClock, FaInfoCircle, FaSearch, FaSignOutAlt, FaChevronDown, FaFilm, FaCrown } from 'react-icons/fa';
+import '../../assets/css/user/header.css';
 import axiosClient from '../../api/axiosClient';
 
 export default function Header() {
@@ -13,6 +13,13 @@ export default function Header() {
     const navigate = useNavigate();
 
     const user = JSON.parse(localStorage.getItem('userInfo'));
+
+    const getVipBadge = (level) => {
+        if (level === 1) return <span className="vip-badge vip-silver">VIP Bạc</span>;
+        if (level === 2) return <span className="vip-badge vip-gold">VIP Vàng</span>;
+        if (level === 3) return <span className="vip-badge vip-diamond">VIP Kim Cương</span>;
+        return null;
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -102,12 +109,15 @@ export default function Header() {
                     {user ? (
                         <div className="user-info" ref={dropdownRef}>
                             <div className="user-dropdown" onClick={toggleDropdown}>
-                                <FaUser /> {user?.username} <FaChevronDown />
+                                <FaUser /> {user?.username} {getVipBadge(user?.vip_level)} <FaChevronDown />
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">
                                     <NavLink to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                                         <FaUser /> Thông tin cá nhân
+                                    </NavLink>
+                                    <NavLink to="/membership" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                        <FaCrown /> Hạng thành viên
                                     </NavLink>
                                     <button className="dropdown-item" onClick={() => { handleLogout(); setDropdownOpen(false); }}>
                                         <FaSignOutAlt /> Đăng xuất

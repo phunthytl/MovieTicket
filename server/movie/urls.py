@@ -9,4 +9,5 @@ router.register(r'reviews', ReviewViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('ai-chat/', AIChatView.as_view(), name='ai-chat'),
 ]

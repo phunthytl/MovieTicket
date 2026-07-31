@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
-import '../../assets/css/user/Showtime.css';
+import '../../assets/css/user/showtime.css';
 import { FaCalendarAlt, FaFilm, FaMapMarkerAlt } from 'react-icons/fa';
 import { getNext7Days } from '../../utils/dateUtils';
 

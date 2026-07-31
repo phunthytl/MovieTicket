@@ -37,6 +37,7 @@ export default function Home() {
         ? nowShowing.slice(0, 8)
         : comingSoon.slice(0, 8);
 
+
     return (
         <div className="home-page">
             {/* Slider phim hot */}
@@ -50,6 +51,7 @@ export default function Home() {
 
             {/* Đặt vé nhanh */}
             <QuickBooking />
+
 
             {/* Tabs */}
             <div className="home-tabs">

@@ -33,6 +33,11 @@ class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAdminUser()]
+        return []
+
     @action(detail=False, methods=['get'], url_path='by-cinema/(?P<cinema_id>[^/.]+)')
     def by_cinema(self, request, cinema_id=None):
         rooms = Room.objects.filter(cinema_id=cinema_id)
@@ -113,13 +118,14 @@ class SeatStatusViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.utils.dateparse import parse_date
 from django.db.models import Sum, Count
 from django.db.models import Q
 from payment.models import *
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def revenue_summary(request):
     start_date_str = request.GET.get('start_date')
     end_date_str = request.GET.get('end_date')
@@ -157,6 +163,7 @@ def revenue_summary(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def revenue_by_cinema_group(request):
     """API lấy doanh thu theo cụm rạp (lọc theo ngày, bỏ giờ)"""
     start_date = request.GET.get('start_date')
@@ -207,6 +214,7 @@ def revenue_by_cinema_group(request):
     })
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def revenue_by_cinema(request, group_id):
     """API lấy doanh thu theo từng rạp trong cụm (lọc theo ngày, bỏ giờ)"""
     try:

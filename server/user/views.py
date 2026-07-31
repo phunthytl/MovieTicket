@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .serializers import *
+from user.serializers import *
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -8,6 +8,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -20,6 +21,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+from user.permissions import IsOwnerOrAdmin
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -30,7 +33,7 @@ class UserViewSet(viewsets.ModelViewSet):
         elif self.action in ['list', 'destroy']:
             return [IsAdminUser()]
         else:
-            return [IsAuthenticated()]
+            return [IsOwnerOrAdmin()]
     
     # def get_serializer_class(self):
     #     if self.action == 'create':

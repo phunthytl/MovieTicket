@@ -39,6 +39,7 @@ import MovieReviewsPage from '../pages/user/ReviewPage';
 import UserProfilePage from '../pages/user/Profile';
 import CinemasPage from '../pages/user/CinemasPage';
 import Register from '../pages/user/Register';
+import MembershipPage from '../pages/user/Membership';
 
 export default function AppRouter() {
 
@@ -96,6 +97,7 @@ export default function AppRouter() {
                     <Route path="cinemas" element={<CinemasPage />} />
                     <Route path="payment/vnpay-return" element={<VNPayReturn />} />
                     <Route path="history" element={<PaymentHistory />} />
+                    <Route path="membership" element={<MembershipPage />} />
                 </Route>
             </Routes>
         </Router>

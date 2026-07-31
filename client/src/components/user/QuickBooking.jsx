@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import { getNext7Days } from '../../utils/dateUtils';
-import '../../assets/css/user/QuickBooking.css';
+import '../../assets/css/user/quickbooking.css';
 
 export function QuickBooking() {
     const [cinemas, setCinemas] = useState([]);

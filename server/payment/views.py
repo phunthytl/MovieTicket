@@ -1,11 +1,11 @@
 from django.http import HttpResponse
 from rest_framework import viewsets, status, filters
-from .models import *
-from .serializers import *
+from payment.models import *
+from payment.serializers import *
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from django.conf import settings
 from django.utils import timezone
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.response import Response
 from urllib.parse import unquote, urlencode, quote_plus
 import hmac, hashlib
@@ -22,32 +22,55 @@ class SnackViewSet(viewsets.ModelViewSet):
 class PaymentSeatViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = PaymentTicketSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user and user.is_authenticated:
+            if user.is_staff:
+                return Ticket.objects.all()
+            return Ticket.objects.filter(payment__user=user)
+        return Ticket.objects.none()
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
-        return []
+        return [IsAuthenticated()]
     
 class PaymentSnackViewSet(viewsets.ModelViewSet):
-    queryset = Snack.objects.all()
+    queryset = PaymentSnack.objects.all()
     serializer_class = PaymentSnackSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user and user.is_authenticated:
+            if user.is_staff:
+                return PaymentSnack.objects.all()
+            return PaymentSnack.objects.filter(payment__user=user)
+        return PaymentSnack.objects.none()
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
-        return []
+        return [IsAuthenticated()]
 
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
-
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status']
     ordering_fields = ['created_at']
 
+    def get_queryset(self):
+        user = self.request.user
+        if user and user.is_authenticated:
+            if user.is_staff:
+                return Payment.objects.all().order_by('-created_at')
+            return Payment.objects.filter(user=user).order_by('-created_at')
+        return Payment.objects.none()
+
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
-        elif self.action == 'create':
-            return [IsAuthenticated()]
-        return []
+        return [IsAuthenticated()]
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -58,22 +81,57 @@ class PaymentViewSet(viewsets.ModelViewSet):
         user = request.user if request.user.is_authenticated else None
         data = request.data
         seats = data.get('seats', [])
-        snacks = data.get('snacks', {})
+        snacks = data.get('snacks', [])
         showtime_id = data.get('showtime')
 
-        total_price = data.get('total_price', 0)
+        # 1. Tính toán tiền ghế thực tế từ CSDL
+        calculated_seats_price = 0
+        for seat_id in seats:
+            try:
+                seat_status = SeatStatus.objects.get(showtime_id=showtime_id, seat_id=seat_id)
+                calculated_seats_price += seat_status.seat.price
+            except SeatStatus.DoesNotExist:
+                return Response({"error": f"Ghế {seat_id} không hợp lệ cho suất chiếu này"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # 2. Tính toán tiền bắp nước thực tế từ CSDL
+        calculated_snacks_price = 0
+        for item in snacks:
+            snack_id = item.get('snack')
+            quantity = item.get('quantity', 0)
+            if snack_id and quantity > 0:
+                try:
+                    snack_obj = Snack.objects.get(id=snack_id)
+                    calculated_snacks_price += snack_obj.price * quantity
+                except Snack.DoesNotExist:
+                    return Response({"error": f"Sản phẩm bắp nước {snack_id} không tồn tại"}, status=status.HTTP_400_BAD_REQUEST)
+
+        subtotal = calculated_seats_price + calculated_snacks_price
+
+        # 3. Áp dụng chiết khấu VIP tương ứng
+        vip_discount_rate = 0
+        if user and user.is_authenticated:
+            if user.vip_level == 1:
+                vip_discount_rate = 0.05
+            elif user.vip_level == 2:
+                vip_discount_rate = 0.10
+            elif user.vip_level == 3:
+                vip_discount_rate = 0.15
+
+        discount_amount = int(subtotal * vip_discount_rate)
+        final_price = subtotal - discount_amount
+
+        # 4. Khởi tạo hóa đơn thanh toán
         payment = Payment.objects.create(
             user=user,
             status='pending',
-            total_price=total_price,
+            total_price=final_price,
         )
 
-        # Đánh dấu ghế đã đặt
+        # Đánh dấu ghế đã đặt và tạo vé
         for seat_id in seats:
             seat_status = SeatStatus.objects.get(showtime_id=showtime_id, seat_id=seat_id)
             if seat_status.status == 'booked':
-                return Response({"error": f"Ghế {seat_id} đã được đặt cho suất chiếu này"}, status=400)
+                return Response({"error": f"Ghế {seat_id} đã được đặt cho suất chiếu này"}, status=status.HTTP_400_BAD_REQUEST)
             seat_status.status = 'booked'
             seat_status.save()
 
@@ -83,14 +141,15 @@ class PaymentViewSet(viewsets.ModelViewSet):
                 showtime_id=showtime_id
             )
 
+        # Liên kết bắp nước với hóa đơn
         for item in snacks:
             snack_id = item.get('snack')
             quantity = item.get('quantity')
             if snack_id and quantity:
                 snack = Snack.objects.get(id=snack_id)
                 PaymentSnack.objects.create(
-                    payment=payment, 
-                    snack=snack, 
+                    payment=payment,
+                    snack=snack,
                     quantity=quantity
                 )
 
@@ -123,13 +182,17 @@ class PaymentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_vnpay_payment(request):
     payment_id = request.data.get('payment_id')
     if not payment_id:
         return Response({'error': 'payment_id is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        payment = Payment.objects.get(id=payment_id)
+        if request.user.is_staff:
+            payment = Payment.objects.get(id=payment_id)
+        else:
+            payment = Payment.objects.get(id=payment_id, user=request.user)
     except Payment.DoesNotExist:
         return Response({'error': 'Payment not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -205,6 +268,11 @@ def vnpay_return(request):
                 payment = Payment.objects.get(id=order_id)
                 payment.status = 'paid'
                 payment.save()
+                
+                # Cập nhật cấp độ VIP sau khi thanh toán thành công
+                if payment.user:
+                    payment.user.update_vip_level()
+
                 return Response({"status": "success", "message": "Thanh toán thành công"})
             except Payment.DoesNotExist:
                 return Response({"status": "error", "message": "Hóa đơn không tồn tại"}, status=404)

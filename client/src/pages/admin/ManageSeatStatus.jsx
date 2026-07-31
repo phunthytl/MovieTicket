@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import { FaTicketAlt, FaTrash, FaUndo, FaSave } from 'react-icons/fa';
-import '../../assets/css/admin/SeatStatus.css';
+import '../../assets/css/admin/seatStatus.css';
 
 export default function ManageSeatStatus() {
 	const { id } = useParams();

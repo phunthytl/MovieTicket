@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import axiosClient from '../../api/axiosClient'
-import '../../assets/css/user/PaymentPage.css'
+import '../../assets/css/user/paymentPage.css'
 
 export default function PaymentPage() {
 	const { paymentId } = useParams()

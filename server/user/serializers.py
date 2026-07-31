@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'name', 'phone', 'avatar', 'is_staff', 'is_active']
+        fields = ['id', 'username', 'email', 'name', 'phone', 'avatar', 'is_staff', 'is_active', 'vip_level']
 
     def get_name(self, obj):
         name = f"{obj.last_name} {obj.first_name}".strip()
@@ -15,12 +15,17 @@ class UserSerializer(serializers.ModelSerializer):
             name = obj.email
         return name
 
+    def to_representation(self, instance):
+        # Tự động cập nhật cấp độ VIP trước khi trả về
+        instance.update_vip_level()
+        return super().to_representation(instance)
+
 
 class UserSerializerWithToken(UserSerializer):
     token = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'name', 'is_staff', 'is_active', 'token']
+        fields = ['id', 'username', 'email', 'name', 'is_staff', 'is_active', 'token', 'vip_level']
 
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)

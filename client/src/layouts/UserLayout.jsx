@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/user/Header';
+import AIChatbot from '../components/user/AIChatbot';
 
 function ScrollToTop() {
     const { pathname } = useLocation();
@@ -23,6 +24,7 @@ export default function UserLayout() {
         <footer style={{ textAlign: 'center', padding: '10px 0', background: '#0b1121', color: '#ccc' }}>
             © 2025 SuperStar. All rights reserved.
         </footer>
+        <AIChatbot />
         </div>
     );
 }

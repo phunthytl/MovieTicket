@@ -1,0 +1,426 @@
+.membership-container {
+  max-width: 1000px;
+  margin: 0 auto 30px;
+  padding: 120px 20px 0;
+  font-family: 'Inter', sans-serif;
+  color: #ffffff;
+}
+
+/* Breadcrumb */
+.membership-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+.membership-breadcrumb a {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.membership-breadcrumb a:hover {
+  color: #fbbf24;
+}
+
+/* Dashboard Grid */
+.membership-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .membership-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* VIP Card Section */
+.membership-card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vip-card-wrapper {
+  perspective: 1000px;
+}
+
+.vip-card {
+  position: relative;
+  height: 220px;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s;
+}
+
+.vip-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Card VIP Tiers backgrounds */
+.vip-card.tier-0 {
+  background: linear-gradient(135deg, #1f2937, #111827);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.vip-card.tier-1 {
+  background: linear-gradient(135deg, #475569, #1e293b);
+  border-color: rgba(203, 213, 225, 0.2);
+  box-shadow: 0 10px 25px rgba(148, 163, 184, 0.2);
+}
+
+.vip-card.tier-2 {
+  background: linear-gradient(135deg, #b45309, #78350f, #1e1b4b);
+  border-color: rgba(251, 191, 36, 0.25);
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.25);
+}
+
+.vip-card.tier-3 {
+  background: linear-gradient(135deg, #0e7490, #1e1b4b, #111827);
+  border-color: rgba(34, 211, 238, 0.3);
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+}
+
+/* Shine overlay effect */
+.vip-card-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(125deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0) 80%);
+  pointer-events: none;
+}
+
+.vip-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vip-card-logo {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.vip-card-chip {
+  width: 42px;
+  height: 32px;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  border-radius: 6px;
+  opacity: 0.75;
+}
+
+.vip-card-number {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+  margin: 15px 0;
+}
+
+.vip-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.vip-card-holder {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vip-card-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.vip-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.vip-card-badge-box {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Progress & Accumulation Section */
+.membership-progress-section {
+  background-color: #111827;
+  border: 1px solid #374151;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.membership-progress-header h3 {
+  margin: 0 0 16px 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+.spent-summary {
+  margin-bottom: 20px;
+}
+
+.spent-label {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.spent-amount {
+  font-size: 28px;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  color: #ffffff;
+}
+
+.spent-note {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  margin: 20px 0;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 8px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 10px;
+  background-color: #1f2937;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid #374151;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+}
+
+.next-tier-info {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #e5e7eb;
+  line-height: 1.5;
+}
+
+.next-tier-info strong {
+  color: #fbbf24;
+}
+
+/* Benefits Section */
+.membership-benefits-section {
+  margin-bottom: 40px;
+}
+
+.membership-benefits-section h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.benefit-card {
+  background-color: #111827;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s;
+}
+
+.benefit-card:hover {
+  transform: translateY(-3px);
+  border-color: #4b5563;
+  background-color: #1f2937;
+}
+
+.benefit-card.active {
+  border-color: #fbbf24;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.08);
+}
+
+.benefit-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.benefit-tier-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.benefit-card.tier-0 .benefit-tier-name { color: #9ca3af; }
+.benefit-card.tier-1 .benefit-tier-name { color: #cbd5e1; }
+.benefit-card.tier-2 .benefit-tier-name { color: #fbbf24; }
+.benefit-card.tier-3 .benefit-tier-name { color: #22d3ee; }
+
+.benefit-active-label {
+  font-size: 10px;
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.benefit-discount-box {
+  font-size: 32px;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+}
+
+.benefit-card.tier-0 .benefit-discount-box { color: #9ca3af; }
+.benefit-card.tier-1 .benefit-discount-box { color: #ffffff; }
+.benefit-card.tier-2 .benefit-discount-box { color: #fbbf24; }
+.benefit-card.tier-3 .benefit-discount-box { color: #22d3ee; }
+
+.benefit-details-list {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.4;
+}
+
+/* History Section */
+.membership-history-section {
+  background-color: #111827;
+  border: 1px solid #374151;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.membership-history-section h3 {
+  margin: 0 0 20px 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Custom Table style */
+.history-table-container {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+
+.history-table th {
+  padding: 12px 16px;
+  border-bottom: 2px solid #374151;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.history-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #1f2937;
+  color: #e5e7eb;
+}
+
+.history-table tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tr:hover td {
+  background-color: #1f2937;
+}
+
+.history-status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.no-history-box {
+  padding: 30px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}

@@ -166,3 +166,42 @@ a {
     align-items: center; 
     gap: 8px;
 }
+
+/* === VIP Badges === */
+.vip-badge {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-left: 6px;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.vip-silver {
+    background-color: #e2e8f0;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 0 5px rgba(226, 232, 240, 0.4);
+}
+
+.vip-gold {
+    background: linear-gradient(135deg, #ffe066 0%, #f5a623 100%);
+    color: #4a3b00;
+    border: 1px solid #f5a623;
+    box-shadow: 0 0 8px rgba(245, 166, 35, 0.5);
+}
+
+.vip-diamond {
+    background: linear-gradient(135deg, #e0f2fe 0%, #38bdf8 100%);
+    color: #0369a1;
+    border: 1px solid #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    animation: vip-shine 2s infinite alternate;
+}
+
+@keyframes vip-shine {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.2) drop-shadow(0 0 2px rgba(56, 189, 248, 0.8)); }
+}

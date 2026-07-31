@@ -33,16 +33,36 @@ export default function UserProfilePage() {
 	const [avatarFile, setAvatarFile] = useState(null);
 	const [avatarPreview, setAvatarPreview] = useState(null);
 
+	const getVipBadge = (level) => {
+		if (level === 1) return <span className="vip-badge vip-silver">VIP Bạc</span>;
+		if (level === 2) return <span className="vip-badge vip-gold">VIP Vàng</span>;
+		if (level === 3) return <span className="vip-badge vip-diamond">VIP Kim Cương</span>;
+		return null;
+	};
+
 	useEffect(() => {
 		const storedUser = localStorage.getItem('userInfo');
 		if (storedUser) {
-			const userInfo = JSON.parse(storedUser);
-			setUser(userInfo);
+			const parsed = JSON.parse(storedUser);
+			setUser(parsed);
 			setProfileForm({
-				name: userInfo.name || '',
-				email: userInfo.email || '',
-				phone: userInfo.phone || '',
+				name: parsed.name || '',
+				email: parsed.email || '',
+				phone: parsed.phone || '',
 			});
+
+			// Đồng bộ thông tin người dùng mới nhất từ server (bao gồm tích lũy VIP)
+			axiosClient.get(`users/users/${parsed.id}/`, { tokenType: 'user' })
+			.then((res) => {
+				localStorage.setItem('userInfo', JSON.stringify(res.data));
+				setUser(res.data);
+				setProfileForm({
+					name: res.data.name || '',
+					email: res.data.email || '',
+					phone: res.data.phone || '',
+				});
+			})
+			.catch((err) => console.error("Lỗi khi tải thông tin người dùng từ server:", err));
 		}
 	}, []);
 
@@ -160,7 +180,7 @@ export default function UserProfilePage() {
 						</div>
 					</div>
 					<div className="user-info">
-						<h2>{user.name}</h2>
+						<h2>{user.name} {getVipBadge(user.vip_level)}</h2>
 						<p>{user.username}</p>
 					</div>
 					<div className="profile-actions">
