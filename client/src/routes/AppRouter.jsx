@@ -22,6 +22,10 @@ import ManageShowtimes from '../pages/admin/ManagaShowtime';
 import ShowtimeForm from '../pages/admin/ShowtimeForm';
 import ManageSeatStatus from '../pages/admin/ManageSeatStatus';
 import ManagePayments from '../pages/admin/ManagePayment';
+import ManageVouchers from '../pages/admin/ManageVoucher';
+import VoucherForm from '../pages/admin/VoucherForm';
+import ManageVIP from '../pages/admin/ManageVIP';
+import ManageAI from '../pages/admin/ManageAI';
 
 import UserLayout from '../layouts/UserLayout';
 import Home from '../pages/user/Home';
@@ -80,6 +84,11 @@ export default function AppRouter() {
                     <Route path="showtimes/:id/seats" element={<ManageSeatStatus />} />
                     <Route path="payments" element={<ManagePayments />} />
                     <Route path="reviews" element={<ManageReviews />} />
+                    <Route path="vouchers" element={<ManageVouchers />} />
+                    <Route path="vouchers/create" element={<VoucherForm mode="create" />} />
+                    <Route path="vouchers/:id/edit" element={<VoucherForm mode="edit" />} />
+                    <Route path="vips" element={<ManageVIP />} />
+                    <Route path="ai" element={<ManageAI />} />
                 </Route>
 
                 {/* Route người dùng*/}

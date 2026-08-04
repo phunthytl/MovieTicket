@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
-import { FaTicketAlt, FaTrash, FaUndo, FaSave } from 'react-icons/fa';
+import { FaTicketAlt, FaTrash, FaUndo, FaSave, FaArrowLeft } from 'react-icons/fa';
 import '../../assets/css/admin/seatStatus.css';
 
 export default function ManageSeatStatus() {
@@ -185,7 +185,7 @@ export default function ManageSeatStatus() {
 							</button>
 						)}
 						<button className="btn-back" onClick={() => navigate('/admin/showtimes')}>
-							↩ Quay lại
+							<FaArrowLeft style={{ marginRight: '6px' }} /> Quay lại
 						</button>
 					</div>
 

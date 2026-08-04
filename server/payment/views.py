@@ -83,6 +83,22 @@ class PaymentViewSet(viewsets.ModelViewSet):
         seats = data.get('seats', [])
         snacks = data.get('snacks', [])
         showtime_id = data.get('showtime')
+        voucher_code = data.get('voucher_code')
+
+        # Tự động khởi tạo SeatStatus nếu chưa được khởi tạo (đề phòng showtime tạo từ Admin hoặc script seed)
+        if showtime_id:
+            try:
+                from cinema.models import Showtime, Seat, SeatStatus
+                showtime = Showtime.objects.get(id=showtime_id)
+                if not SeatStatus.objects.filter(showtime=showtime).exists():
+                    all_seats = Seat.objects.filter(room=showtime.room)
+                    seat_status_objects = [
+                        SeatStatus(showtime=showtime, seat=seat, status='available')
+                        for seat in all_seats
+                    ]
+                    SeatStatus.objects.bulk_create(seat_status_objects)
+            except Showtime.DoesNotExist:
+                return Response({"error": "Suất chiếu không tồn tại"}, status=status.HTTP_400_BAD_REQUEST)
 
         # 1. Tính toán tiền ghế thực tế từ CSDL
         calculated_seats_price = 0
@@ -117,14 +133,60 @@ class PaymentViewSet(viewsets.ModelViewSet):
             elif user.vip_level == 3:
                 vip_discount_rate = 0.15
 
-        discount_amount = int(subtotal * vip_discount_rate)
-        final_price = subtotal - discount_amount
+        vip_discount = int(subtotal * vip_discount_rate)
 
-        # 4. Khởi tạo hóa đơn thanh toán
+        # 4. Áp dụng Voucher (nếu có)
+        voucher_discount = 0
+        voucher_obj = None
+        if voucher_code and user and user.is_authenticated:
+            try:
+                voucher_obj = Voucher.objects.get(code=voucher_code, active=True)
+                now = timezone.now()
+                # Kiểm tra hạn sử dụng
+                is_expired = False
+                if voucher_obj.start_date and voucher_obj.start_date > now:
+                    is_expired = True
+                if voucher_obj.end_date and voucher_obj.end_date < now:
+                    is_expired = True
+
+                # Kiểm tra xem người dùng đã dùng chưa
+                already_used = UserVoucher.objects.filter(user=user, voucher=voucher_obj).exists()
+
+                # Kiểm tra số lượng đã dùng trên toàn hệ thống
+                total_used = UserVoucher.objects.filter(voucher=voucher_obj).count()
+
+                if is_expired:
+                    return Response({"error": "Mã giảm giá đã hết hạn sử dụng"}, status=status.HTTP_400_BAD_REQUEST)
+                elif already_used:
+                    return Response({"error": "Bạn đã sử dụng mã giảm giá này rồi"}, status=status.HTTP_400_BAD_REQUEST)
+                elif total_used >= voucher_obj.quantity:
+                    return Response({"error": "Mã giảm giá đã hết lượt sử dụng"}, status=status.HTTP_400_BAD_REQUEST)
+                elif subtotal < voucher_obj.min_spent:
+                    return Response({"error": f"Đơn hàng chưa đạt giá trị tối thiểu {voucher_obj.min_spent}đ để áp dụng mã"}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    # Tính tiền giảm
+                    if voucher_obj.discount_type == 'amount':
+                        voucher_discount = voucher_obj.discount_amount
+                    elif voucher_obj.discount_type == 'percentage':
+                        pct_discount = int(subtotal * (voucher_obj.discount_amount / 100.0))
+                        if voucher_obj.max_discount and voucher_obj.max_discount > 0:
+                            voucher_discount = min(pct_discount, voucher_obj.max_discount)
+                        else:
+                            voucher_discount = pct_discount
+            except Voucher.DoesNotExist:
+                return Response({"error": "Mã giảm giá không hợp lệ hoặc đã bị khóa"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Tránh giảm âm tiền
+        final_price = max(0, subtotal - vip_discount - voucher_discount)
+
+        # 5. Khởi tạo hóa đơn thanh toán
         payment = Payment.objects.create(
             user=user,
             status='pending',
             total_price=final_price,
+            voucher=voucher_obj,
+            vip_discount=vip_discount,
+            voucher_discount=voucher_discount
         )
 
         # Đánh dấu ghế đã đặt và tạo vé
@@ -179,6 +241,44 @@ class PaymentViewSet(viewsets.ModelViewSet):
     def user_payments(self, request):
         payments = Payment.objects.filter(user=request.user, status='paid').order_by('-created_at')
         serializer = PaymentSerializer(payments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class VoucherViewSet(viewsets.ModelViewSet):
+    queryset = Voucher.objects.all().order_by('-id')
+    serializer_class = VoucherSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'list', 'retrieve']:
+            return [IsAdminUser()]
+        return []
+
+    @action(detail=False, methods=['get'], url_path='my-vouchers', permission_classes=[IsAuthenticated])
+    def my_vouchers(self, request):
+        user = request.user
+        now = timezone.now()
+
+        # 1. Lọc các voucher còn hoạt động và chưa hết hạn
+        active_vouchers = Voucher.objects.filter(
+            active=True
+        ).filter(
+            models.Q(start_date__isnull=True) | models.Q(start_date__lte=now)
+        ).filter(
+            models.Q(end_date__isnull=True) | models.Q(end_date__gte=now)
+        )
+
+        # 2. Loại bỏ các voucher người dùng này đã dùng thành công
+        used_voucher_ids = UserVoucher.objects.filter(user=user).values_list('voucher_id', flat=True)
+        available_vouchers = active_vouchers.exclude(id__in=used_voucher_ids)
+
+        # 3. Lọc bỏ các voucher đã hết lượt sử dụng trên hệ thống
+        valid_vouchers = []
+        for voucher in available_vouchers:
+            used_count = UserVoucher.objects.filter(voucher=voucher).count()
+            if used_count < voucher.quantity:
+                valid_vouchers.append(voucher)
+
+        serializer = self.get_serializer(valid_vouchers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -272,6 +372,10 @@ def vnpay_return(request):
                 # Cập nhật cấp độ VIP sau khi thanh toán thành công
                 if payment.user:
                     payment.user.update_vip_level()
+
+                # Lưu vết sử dụng voucher sau khi thanh toán thành công
+                if payment.voucher and payment.user:
+                    UserVoucher.objects.get_or_create(user=payment.user, voucher=payment.voucher)
 
                 return Response({"status": "success", "message": "Thanh toán thành công"})
             except Payment.DoesNotExist:

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import '../../assets/css/user/Profile.css';
-import { FaUser, FaCamera, FaEdit, FaLock, FaSave, FaTimes,	FaEye, FaEyeSlash, FaHome, FaChevronRight, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { FaUser, FaCamera, FaEdit, FaLock, FaSave, FaTimes,	FaEye, FaEyeSlash, FaHome, FaChevronRight, FaEnvelope, FaPhone, FaUserCircle } from 'react-icons/fa';
 
 
 export default function UserProfilePage() {
@@ -160,12 +160,19 @@ export default function UserProfilePage() {
 			<div className="profile-container">
 				<div className="profile-header">
 					<div className="avatar-section">
-						<div className="avatar-container">
-							<img
-								src={avatarPreview || user.avatar || '/default-avatar.png'}
-								alt="Avatar"
-								className="avatar"
-							/>
+						<div className="avatar-container" style={{ position: 'relative' }}>
+							{(avatarPreview || user.avatar) ? (
+								<img
+									src={avatarPreview || user.avatar}
+									alt="Avatar"
+									className="avatar"
+									style={{ objectFit: 'cover' }}
+								/>
+							) : (
+								<div className="avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+									<FaUserCircle size={100} color="#cbd5e1" />
+								</div>
+							)}
 							{isEditing && (
 								<label className="avatar-upload">
 									<FaCamera />

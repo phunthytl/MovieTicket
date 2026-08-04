@@ -5,15 +5,20 @@ from django.contrib.auth import update_session_auth_hash
 
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
+    total_spent = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'name', 'phone', 'avatar', 'is_staff', 'is_active', 'vip_level']
+        fields = ['id', 'username', 'email', 'name', 'phone', 'avatar', 'is_staff', 'is_active', 'vip_level', 'total_spent']
 
     def get_name(self, obj):
         name = f"{obj.last_name} {obj.first_name}".strip()
         if name == '':
             name = obj.email
         return name
+
+    def get_total_spent(self, obj):
+        return obj.get_total_spent()
 
     def to_representation(self, instance):
         # Tự động cập nhật cấp độ VIP trước khi trả về

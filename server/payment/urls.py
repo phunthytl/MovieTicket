@@ -7,6 +7,7 @@ router.register(r'snacks', SnackViewSet, basename='snack')
 router.register(r'payment-snacks', PaymentSnackViewSet, basename='payment-snack')
 router.register(r'payment-seats', PaymentSeatViewSet)
 router.register(r'payments', PaymentViewSet)
+router.register(r'vouchers', VoucherViewSet, basename='voucher')
 
 urlpatterns = [
     path('', include(router.urls)),

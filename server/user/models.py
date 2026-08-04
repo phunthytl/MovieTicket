@@ -33,5 +33,18 @@ class User(AbstractUser):
 
         return self.vip_level
 
+    def get_total_spent(self):
+        from payment.models import Payment
+        from django.utils import timezone
+        from datetime import timedelta
+        from django.db.models import Sum
+
+        one_year_ago = timezone.now() - timedelta(days=365)
+        return Payment.objects.filter(
+            user=self,
+            status='paid',
+            created_at__gte=one_year_ago
+        ).aggregate(total=Sum('total_price'))['total'] or 0
+
     def __str__(self):
         return self.username

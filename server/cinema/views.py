@@ -111,8 +111,36 @@ class SeatStatusViewSet(viewsets.ModelViewSet):
             return [IsAdminUser()]
         return []
 
+    def list(self, request, *args, **kwargs):
+        showtime_id = request.query_params.get('showtime')
+        if showtime_id:
+            try:
+                showtime = Showtime.objects.get(id=showtime_id)
+                if not SeatStatus.objects.filter(showtime=showtime).exists():
+                    seats = Seat.objects.filter(room=showtime.room)
+                    seat_status_objects = [
+                        SeatStatus(showtime=showtime, seat=seat, status='available')
+                        for seat in seats
+                    ]
+                    SeatStatus.objects.bulk_create(seat_status_objects)
+            except Showtime.DoesNotExist:
+                pass
+        return super().list(request, *args, **kwargs)
+
     @action(detail=False, methods=['get'], url_path='by-showtime/(?P<showtime_id>[^/.]+)')
     def by_showtime(self, request, showtime_id=None):
+        if showtime_id:
+            try:
+                showtime = Showtime.objects.get(id=showtime_id)
+                if not SeatStatus.objects.filter(showtime=showtime).exists():
+                    seats = Seat.objects.filter(room=showtime.room)
+                    seat_status_objects = [
+                        SeatStatus(showtime=showtime, seat=seat, status='available')
+                        for seat in seats
+                    ]
+                    SeatStatus.objects.bulk_create(seat_status_objects)
+            except Showtime.DoesNotExist:
+                pass
         queryset = SeatStatus.objects.filter(showtime_id=showtime_id)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

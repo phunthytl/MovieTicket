@@ -17,6 +17,12 @@ class PaymentTicketSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class VoucherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Voucher
+        fields = '__all__'
+
+
 class PaymentSnackSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentSnack
@@ -26,6 +32,7 @@ class PaymentSnackSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     snacks = PaymentSnackSerializer(many=True, read_only=True)
     user = UserSerializer(read_only=True)
+    voucher = VoucherSerializer(read_only=True)
     tickets = serializers.SerializerMethodField()
     showtime_end = serializers.SerializerMethodField(read_only = True)
     movie_id = serializers.SerializerMethodField(read_only = True)
@@ -85,6 +92,7 @@ class PaymentDetailSerializer(serializers.ModelSerializer):
     room_name = serializers.SerializerMethodField()
     movie_id = serializers.CharField(source='movie.id', read_only=True)
     showtime_id = serializers.CharField(source='showtime.id', read_only=True)
+    voucher = VoucherSerializer(read_only=True)
 
     class Meta:
         model = Payment

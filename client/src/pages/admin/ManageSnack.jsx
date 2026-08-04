@@ -3,9 +3,13 @@ import axiosClient from '../../api/axiosClient';
 import '../../assets/css/admin/admin.css';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import SearchAndSort from '../../components/admin/SearchAndSort';
 
 export default function ManageSnacks() {
 	const [snacks, setSnacks] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [sortKey, setSortKey] = useState('id');
+	const [sortOrder, setSortOrder] = useState('desc');
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -21,6 +25,15 @@ export default function ManageSnacks() {
 		fetchSnacks();
 	}, []);
 
+	const handleSort = (key) => {
+		if (sortKey === key) {
+			setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+		} else {
+			setSortKey(key);
+			setSortOrder('asc');
+		}
+	};
+
 	const handleDelete = async (snackId) => {
 		if (window.confirm('Bạn có chắc muốn xoá món này?')) {
 			try {
@@ -32,6 +45,25 @@ export default function ManageSnacks() {
 		}
 	};
 
+	const filteredAndSorted = [...snacks]
+		.filter((snack) =>
+			snack.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			snack.price?.toString().includes(searchTerm)
+		)
+		.sort((a, b) => {
+			if (!sortKey) return 0;
+			if (sortKey === 'price') {
+				const valA = a.price || 0;
+				const valB = b.price || 0;
+				return sortOrder === 'asc' ? valA - valB : valB - valA;
+			}
+			const valA = a[sortKey]?.toString().toLowerCase() || '';
+			const valB = b[sortKey]?.toString().toLowerCase() || '';
+			return sortOrder === 'asc'
+				? valA.localeCompare(valB)
+				: valB.localeCompare(valA);
+		});
+
 	return (
 		<div className="movie-management">
 			<div className="movie-management-header">
@@ -40,6 +72,19 @@ export default function ManageSnacks() {
 					+ Thêm món ăn
 				</button>
 			</div>
+
+			<SearchAndSort
+				searchTerm={searchTerm}
+				onSearchChange={setSearchTerm}
+				sortKey={sortKey}
+				sortOrder={sortOrder}
+				onSort={handleSort}
+				columns={[
+					{ key: 'id', label: 'Mã món' },
+					{ key: 'name', label: 'Tên món' },
+					{ key: 'price', label: 'Giá' }
+				]}
+			/>
 
 			<table className="admin-table">
 				<thead>
@@ -52,7 +97,7 @@ export default function ManageSnacks() {
 					</tr>
 				</thead>
 				<tbody>
-					{snacks.map((snack) => (
+					{filteredAndSorted.map((snack) => (
 						<tr key={snack.id}>
 							<td>{snack.id}</td>
 							<td>{snack.name}</td>

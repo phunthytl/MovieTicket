@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import axiosClient from '../../api/axiosClient';
+import SearchAndSort from '../../components/admin/SearchAndSort';
 import '../../assets/css/admin/admin.css';
 
 export default function ManageRooms() {
@@ -9,6 +10,9 @@ export default function ManageRooms() {
     const location = useLocation();
     const cinemaName = location.state?.cinemaName || '';
     const [rooms, setRooms] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortKey, setSortKey] = useState('id');
+    const [sortOrder, setSortOrder] = useState('desc');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,6 +27,15 @@ export default function ManageRooms() {
       fetchData();
     }, [cinemaId]);
 
+    const handleSort = (key) => {
+        if (sortKey === key) {
+            setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+        } else {
+            setSortKey(key);
+            setSortOrder('asc');
+        }
+    };
+
     const handleDelete = async (id) => {
       if (window.confirm('Xoá phòng chiếu này?')) {
         try {
@@ -33,6 +46,21 @@ export default function ManageRooms() {
         }
       }
     };
+
+    const filteredAndSorted = [...rooms]
+        .filter((r) =>
+            r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            r.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            r.status.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => {
+            if (!sortKey) return 0;
+            const valA = a[sortKey]?.toString().toLowerCase() || '';
+            const valB = b[sortKey]?.toString().toLowerCase() || '';
+            return sortOrder === 'asc'
+                ? valA.localeCompare(valB)
+                : valB.localeCompare(valA);
+        });
 
     return (
       <div className="movie-management">
@@ -50,6 +78,19 @@ export default function ManageRooms() {
           </button>
         </div>
 
+        <SearchAndSort
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            sortKey={sortKey}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+            columns={[
+                { key: 'id', label: 'Mã phòng' },
+                { key: 'name', label: 'Tên phòng' },
+                { key: 'type', label: 'Loại phòng' }
+            ]}
+        />
+
         <table className="admin-table">
           <thead>
             <tr>
@@ -61,7 +102,7 @@ export default function ManageRooms() {
             </tr>
           </thead>
           <tbody>
-            {rooms.map((r) => (
+            {filteredAndSorted.map((r) => (
               <tr key={r.id}>
                 <td>{r.id}</td>
                 <td

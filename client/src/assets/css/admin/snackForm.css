@@ -1,105 +1,207 @@
+/* Snack, Cinema, Room, Showtime, User, and general Form Styles */
 .snack-form-container {
-    padding: 20px;
-    background: #fff;
-  }
-  
-  .snack-form-container h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-    color: #333;
-  }
-  
-  .snack-form {
-    display: flex;
-    gap: 30px;
-  }
-  
-  .snack-form-left {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .snack-form-left label {
-    font-weight: 600;
-    margin-bottom: 5px;
-    display: block;
-    color: #333;
-    font-size: 14px;
-  }
-  
-  .snack-form-left input,
-  .snack-form-left textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  .snack-form-right {
-    width: 220px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .snack-image-preview {
-    width: 100%;
-    height: 180px;
-    border: 1px dashed #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f9f9f9;
-  }
-  
-  .snack-image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-  
-  .image-placeholder {
-    font-size: 24px;
-    color: #aaa;
-  }
-  
-  .btn-upload {
-    background: #0d6efd;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .snack-form-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .btn-save {
-    background: #28a745;
-    color: white;
-    padding: 8px 16px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .btn-back {
-    background: #6c757d;
-    color: white;
-    padding: 8px 16px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
+  padding: 35px;
+  background: #ffffff;
+  border-radius: 4px; /* Giảm bo góc xuống 4px */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.snack-form-container h2 {
+  margin: 0 0 25px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.snack-form-container h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50px;
+  height: 4px;
+  background: #3b82f6;
+  border-radius: 2px;
+}
+
+.snack-form {
+  display: flex;
+  gap: 40px;
+}
+
+.snack-form-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.snack-form-left > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.snack-form-left label {
+  font-weight: 600;
+  color: #475569;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+.snack-form-left input,
+.snack-form-left select,
+.snack-form-left textarea,
+.snack-form-right input,
+.snack-form-right select,
+.snack-form-right textarea {
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0; /* Mỏng và sáng hơn */
+  border-radius: 4px; /* Giảm bo góc xuống 4px */
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  color: #1e293b;
+  background-color: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.snack-form-left input::placeholder,
+.snack-form-left textarea::placeholder,
+.snack-form-right input::placeholder,
+.snack-form-right textarea::placeholder {
+  color: #94a3b8;
+}
+
+.snack-form-left input:focus,
+.snack-form-left select:focus,
+.snack-form-left textarea:focus,
+.snack-form-right input:focus,
+.snack-form-right select:focus,
+.snack-form-right textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+
+.snack-form-left textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.snack-form-right {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding-left: 10px; /* Bỏ border-left */
+}
+
+.snack-image-preview {
+  width: 100%;
+  height: 220px;
+  border-radius: 4px; /* Giảm bo góc xuống 4px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9; /* Nền xám phẳng, không có border nét đứt */
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.snack-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #94a3b8;
+  gap: 8px;
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px; /* Giảm bo góc xuống 4px */
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
+}
+
+.btn-upload:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+.snack-form-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row; /* Xếp hàng ngang */
+  width: 100%;
+  gap: 12px;
+}
+
+.btn-save,
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px; /* Giảm bo góc xuống 4px */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-save {
+  background: #10b981;
+  color: white;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.15);
+}
+
+.btn-save:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.btn-back {
+  background: #64748b;
+  color: white;
+  box-shadow: 0 2px 4px rgba(100, 116, 139, 0.15);
+}
+
+.btn-back:hover {
+  background: #475569;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(100, 116, 139, 0.2);
+}

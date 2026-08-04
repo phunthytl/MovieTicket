@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import { FaSave, FaArrowLeft, FaPlus, FaUser } from 'react-icons/fa';
+import '../../assets/css/admin/snackForm.css';
 import '../../assets/css/admin/userForm.css';
 export default function UserForm({ mode = 'create' }) {
 	const navigate = useNavigate();
@@ -157,11 +159,11 @@ export default function UserForm({ mode = 'create' }) {
 						{preview ? (
 							<img src={preview} alt="avatar" />
 						) : (
-							<div className="image-placeholder">🖼</div>
+							<div className="image-placeholder"><FaUser size={36} color="#aaa" /></div>
 						)}
 					</div>
 
-					<label htmlFor="avatar-upload" className="btn-upload">+ Thêm ảnh</label>
+					<label htmlFor="avatar-upload" className="btn-upload"><FaPlus style={{ marginRight: '6px' }} /> Thêm ảnh</label>
 					<input
 						id="avatar-upload"
 						type="file"
@@ -171,9 +173,9 @@ export default function UserForm({ mode = 'create' }) {
 					/>
 
 					<div className="snack-form-actions">
-						<button type="submit" className="btn-save">💾 Lưu</button>
+						<button type="submit" className="btn-save"><FaSave style={{ marginRight: '6px' }} /> Lưu</button>
 						<button type="button" className="btn-back" onClick={() => navigate('/admin/users')}>
-							↩ Quay lại
+							<FaArrowLeft style={{ marginRight: '6px' }} /> Quay lại
 						</button>
 					</div>
 				</div>

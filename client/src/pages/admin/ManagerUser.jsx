@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import SearchAndSort from '../../components/admin/SearchAndSort';
 import '../../assets/css/admin/admin.css';
 
 export default function ManageUsers() {
 	const [users, setUsers] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [sortKey, setSortKey] = useState('id');
+	const [sortOrder, setSortOrder] = useState('desc');
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -20,6 +24,15 @@ export default function ManageUsers() {
 		fetchUsers();
 	}, []);
 
+	const handleSort = (key) => {
+		if (sortKey === key) {
+			setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+		} else {
+			setSortKey(key);
+			setSortOrder('asc');
+		}
+	};
+
 	const handleDelete = async (userId) => {
 		if (window.confirm('Bạn có chắc muốn xoá người dùng này?')) {
 			try {
@@ -31,6 +44,22 @@ export default function ManageUsers() {
 		}
 	};
 
+	const filteredAndSorted = [...users]
+		.filter((user) =>
+			user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(user.phone || '').includes(searchTerm)
+		)
+		.sort((a, b) => {
+			if (!sortKey) return 0;
+			const valA = a[sortKey]?.toString().toLowerCase() || '';
+			const valB = b[sortKey]?.toString().toLowerCase() || '';
+			return sortOrder === 'asc'
+				? valA.localeCompare(valB)
+				: valB.localeCompare(valA);
+		});
+
 	return (
 		<div className="movie-management">
 			<div className="movie-management-header">
@@ -39,6 +68,19 @@ export default function ManageUsers() {
 					+ Thêm người dùng
 				</button>
 			</div>
+
+			<SearchAndSort
+				searchTerm={searchTerm}
+				onSearchChange={setSearchTerm}
+				sortKey={sortKey}
+				sortOrder={sortOrder}
+				onSort={handleSort}
+				columns={[
+					{ key: 'id', label: 'Mã ND' },
+					{ key: 'name', label: 'Tên người dùng' },
+					{ key: 'username', label: 'Username' }
+				]}
+			/>
 
 			<table className="admin-table">
 				<thead>
@@ -54,13 +96,15 @@ export default function ManageUsers() {
 					</tr>
 				</thead>
 				<tbody>
-					{users.map((user) => (
+					{filteredAndSorted.map((user) => (
 						<tr key={user.id}>
 							<td>{user.id}</td>
 							<td>
 								{user.avatar ? (
-									<img src={user.avatar} alt="avatar" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-								) : '—'}
+									<img src={user.avatar} alt="avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+								) : (
+									<FaUserCircle size={40} color="#cbd5e1" />
+								)}
 							</td>
 							<td>{user.name}</td>
 							<td>{user.email}</td>

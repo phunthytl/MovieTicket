@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import { FaSave, FaArrowLeft, FaCamera } from 'react-icons/fa';
 import '../../assets/css/admin/movieForm.css';
 
 export default function MovieForm({ mode }) {
@@ -29,7 +30,6 @@ export default function MovieForm({ mode }) {
     useEffect(() => {
         axiosClient.get('movies/genres/')
         .then(res => {
-            // Có thể res.data hoặc res là mảng
             const genres = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
             setGenreOptions(genres);
         })
@@ -140,177 +140,216 @@ export default function MovieForm({ mode }) {
 
     return (
         <div className="movie-form-container">
-        <form className="movie-form" onSubmit={handleSubmit}>
+            <h2>{isCreate ? 'Thêm mới phim' : (isEdit ? 'Chỉnh sửa thông tin phim' : 'Chi tiết thông tin phim')}</h2>
+            
+            <form className="movie-form" onSubmit={handleSubmit}>
+                <div className="movie-form-left">
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '20px' }}>
+                        <div>
+                            <label>Mã Phim (ID)</label>
+                            <input
+                                name="id"
+                                value={formData.id}
+                                onChange={handleChange}
+                                disabled={!isCreate}
+                                placeholder="VD: M11"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label>Tên phim</label>
+                            <input
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                disabled={isView}
+                                placeholder="Nhập tên phim..."
+                                required
+                            />
+                        </div>
+                    </div>
 
-            <div className="movie-form-left">
-            <div className="full-width">
-                <label>ID</label>
-                <input
-                name="id"
-                value={formData.id}
-                onChange={handleChange}
-                disabled={!isCreate}
-                required
-                />
-            </div>
+                    <div className="form-row">
+                        <div>
+                            <label>Thời lượng (phút)</label>
+                            <input
+                                name="duration"
+                                value={formData.duration}
+                                onChange={handleChange}
+                                disabled={isView}
+                                placeholder="VD: 120"
+                                inputMode="numeric"
+                                pattern="\d*"
+                            />
+                        </div>
+                        <div>
+                            <label>Giới hạn độ tuổi</label>
+                            <select
+                                name="age_rating"
+                                value={formData.age_rating}
+                                onChange={handleChange}
+                                disabled={isView}
+                            >
+                                <option value="">-- Chọn độ tuổi --</option>
+                                <option value="P">P - Mọi lứa tuổi</option>
+                                <option value="13+">C13 - 13 tuổi trở lên</option>
+                                <option value="16+">C16 - 16 tuổi trở lên</option>
+                                <option value="18+">C18 - 18 tuổi trở lên</option>
+                            </select>
+                        </div>
+                    </div>
 
-            <div className="full-width">
-                <label>Tên phim</label>
-                <input
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                disabled={isView}
-                required
-                />
-            </div>
+                    <div className="form-row">
+                        <div>
+                            <label>Ngôn ngữ</label>
+                            <input
+                                name="language"
+                                value={formData.language}
+                                onChange={handleChange}
+                                disabled={isView}
+                                placeholder="VD: Tiếng Anh, Phụ đề Tiếng Việt"
+                            />
+                        </div>
+                        <div>
+                            <label>Quốc gia</label>
+                            <input
+                                name="country"
+                                value={formData.country}
+                                onChange={handleChange}
+                                disabled={isView}
+                                placeholder="VD: Mỹ, Hàn Quốc, Việt Nam"
+                            />
+                        </div>
+                    </div>
 
-            <div>
-                <label>Thời lượng (phút)</label>
-                <input
-                name="duration"
-                value={formData.duration}
-                onChange={handleChange}
-                disabled={isView}
-                inputMode="numeric"
-                pattern="\d*"
-                />
-            </div>
+                    <div className="full-width">
+                        <label>Mô tả nội dung</label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            disabled={isView}
+                            placeholder="Nhập tóm tắt nội dung phim..."
+                        />
+                    </div>
 
-            <div>
-                <label>Giới hạn độ tuổi</label>
-                <select
-                name="age_rating"
-                value={formData.age_rating}
-                onChange={handleChange}
-                disabled={isView}
-                >
-                <option value="">-- Chọn độ tuổi --</option>
-                <option value="P">P</option>
-                <option value="13+">13+</option>
-                <option value="16+">16+</option>
-                <option value="18+">18+</option>
-                </select>
-            </div>
-
-            <div>
-                <label>Ngôn ngữ</label>
-                <input
-                name="language"
-                value={formData.language}
-                onChange={handleChange}
-                disabled={isView}
-                />
-            </div>
-
-            <div>
-                <label>Quốc gia</label>
-                <input
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                disabled={isView}
-                />
-            </div>
-
-            <div className="full-width">
-                <label>Mô tả</label>
-                <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                disabled={isView}
-                />
-            </div>
-
-            <div className="full-width">
-                <label>Thể loại</label>
-                {isView ? (
-                <div className="readonly-value">
-                    {genreOptions
-                    .filter(g => formData.genres.includes(String(g.id)))
-                    .map(g => g.name)
-                    .join(', ') || 'Không có'}
+                    <div className="full-width">
+                        <label>Thể loại</label>
+                        {isView ? (
+                            <div className="readonly-value" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                {genreOptions
+                                    .filter(g => formData.genres.includes(String(g.id)))
+                                    .map(g => (
+                                        <span key={g.id} style={{ background: '#f1f5f9', padding: '6px 12px', borderRadius: '20px', fontSize: '13px', color: '#475569', border: '1px solid #e2e8f0' }}>
+                                            {g.name}
+                                        </span>
+                                    ))}
+                                {formData.genres.length === 0 && 'Chưa chọn thể loại'}
+                            </div>
+                        ) : (
+                            <div className="genres-checkbox-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '10px', marginTop: '5px' }}>
+                                {genreOptions.map((genre) => {
+                                    const isChecked = formData.genres.includes(String(genre.id));
+                                    return (
+                                        <label key={genre.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', border: `1px solid ${isChecked ? '#3b82f6' : '#cbd5e1'}`, borderRadius: '8px', background: isChecked ? '#eff6ff' : '#f8fafc', cursor: 'pointer', transition: 'all 0.2s ease', margin: 0, fontWeight: 'normal' }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={isChecked}
+                                                onChange={(e) => {
+                                                    const checked = e.target.checked;
+                                                    if (checked) {
+                                                        setFormData(prev => ({ ...prev, genres: [...prev.genres, String(genre.id)] }));
+                                                    } else {
+                                                        setFormData(prev => ({ ...prev, genres: prev.genres.filter(g => g !== String(genre.id)) }));
+                                                    }
+                                                }}
+                                                style={{ width: 'auto', margin: 0, cursor: 'pointer' }}
+                                            />
+                                            <span style={{ fontSize: '13px', color: '#1e293b' }}>{genre.name}</span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
                 </div>
-                ) : (
-                <select
-                    name="genres"
-                    multiple
-                    value={formData.genres}
-                    onChange={(e) => {
-                    const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
-                    setFormData(prev => ({ ...prev, genres: selected }));
-                    }}
-                >
-                    {genreOptions.map((genre) => (
-                    <option key={genre.id} value={genre.id}>{genre.name}</option>
-                    ))}
-                </select>
-                )}
-            </div>
-            </div>
 
-            <div className="movie-form-right">
-            <div className="image-preview">
-                {formData.poster ? (
-                typeof formData.poster === 'string' ? (
-                    <img src={formData.poster} alt="Poster" />
-                ) : (
-                    <img src={URL.createObjectURL(formData.poster)} alt="Poster" />
-                )
-                ) : (
-                <span>Chưa có ảnh</span>
-                )}
-            </div>
+                <div className="movie-form-right">
+                    <label style={{ textAlign: 'center', display: 'block' }}>Ảnh Poster Phim</label>
+                    <div className="image-preview" style={{ marginBottom: '15px' }}>
+                        {formData.poster ? (
+                            typeof formData.poster === 'string' ? (
+                                <img src={formData.poster} alt="Poster" />
+                            ) : (
+                                <img src={URL.createObjectURL(formData.poster)} alt="Poster" />
+                            )
+                        ) : (
+                            <div style={{ textAlign: 'center' }}>
+                                <FaCamera size={36} color="#aaa" style={{ marginBottom: '8px' }} />
+                                <span style={{ display: 'block', fontSize: '14px', color: '#999' }}>Chưa có ảnh</span>
+                            </div>
+                        )}
+                    </div>
 
-            {!isView && (
-                <input
-                type="file"
-                name="poster"
-                accept="image/*"
-                onChange={handleChange}
-                className="upload-btn"
-                />
-            )}
+                    {!isView && (
+                        <div style={{ position: 'relative', width: '100%', marginBottom: '15px' }}>
+                            <label className="upload-btn" style={{ background: '#3b82f6', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', transition: 'all 0.2s ease' }}>
+                                <FaCamera /> Tải ảnh Poster
+                                <input
+                                    type="file"
+                                    name="poster"
+                                    accept="image/*"
+                                    onChange={handleChange}
+                                    style={{ display: 'none' }}
+                                />
+                            </label>
+                            {formData.poster && typeof formData.poster !== 'string' && (
+                                <div style={{ fontSize: '12px', color: '#64748b', textAlign: 'center', marginTop: '6px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    Đã chọn: {formData.poster.name}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
-            <div>
-                <label>Trạng thái</label>
-                <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                disabled={isView}
-                >
-                <option value="">-- Chọn trạng thái --</option>
-                <option value="Đang chiếu">Đang chiếu</option>
-                <option value="Sắp chiếu">Sắp chiếu</option>
-                </select>
-            </div>
+                    <div>
+                        <label>Trạng thái chiếu</label>
+                        <select
+                            name="status"
+                            value={formData.status}
+                            onChange={handleChange}
+                            disabled={isView}
+                        >
+                            <option value="">-- Chọn trạng thái --</option>
+                            <option value="Đang chiếu">Đang chiếu</option>
+                            <option value="Sắp chiếu">Sắp chiếu</option>
+                        </select>
+                    </div>
 
-            <div>
-                <label>Trailer</label>
-                <input
-                name="trailer"
-                value={formData.trailer}
-                onChange={handleChange}
-                disabled={isView}
-                />
-            </div>
+                    <div>
+                        <label>Link Trailer (Youtube)</label>
+                        <input
+                            name="trailer"
+                            value={formData.trailer}
+                            onChange={handleChange}
+                            disabled={isView}
+                            placeholder="https://www.youtube.com/watch?..."
+                        />
+                    </div>
 
-            {!isView && (
-                <div className="form-buttons">
-                <button type="submit" className="save-btn">Lưu</button>
-                <button
-                    type="button"
-                    className="cancel-btn"
-                    onClick={() => navigate('/admin/movies')}
-                >
-                    Quay lại
-                </button>
+                    {!isView && (
+                        <div className="form-buttons" style={{ marginTop: '10px' }}>
+                            <button type="submit" className="save-btn"><FaSave style={{ marginRight: '6px' }} /> Lưu thông tin</button>
+                            <button
+                                type="button"
+                                className="cancel-btn"
+                                onClick={() => navigate('/admin/movies')}
+                            >
+                                <FaArrowLeft style={{ marginRight: '6px' }} /> Quay lại
+                            </button>
+                        </div>
+                    )}
                 </div>
-            )}
-            </div>
-        </form>
+            </form>
         </div>
     );
 }

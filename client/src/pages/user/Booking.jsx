@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import { FaArrowLeft, FaCreditCard, FaGift } from 'react-icons/fa';
 import '../../assets/css/user/booking.css';
 
 export default function BookingPage() {
@@ -15,11 +16,27 @@ export default function BookingPage() {
 	const [selectedSeats, setSelectedSeats] = useState([]);
 	const [snacks, setSnacks] = useState([]);
 	const [selectedSnacks, setSelectedSnacks] = useState({});
+	const [vouchers, setVouchers] = useState([]);
+	const [selectedVoucher, setSelectedVoucher] = useState(null);
+	const [voucherDiscount, setVoucherDiscount] = useState(0);
 
 	useEffect(() => {
 		fetchData();
 		fetchSnacks();
+		fetchVouchers();
 	}, [id]);
+
+	const fetchVouchers = async () => {
+		try {
+			const token = localStorage.getItem('userToken');
+			if (token) {
+				const res = await axiosClient.get('payments/vouchers/my-vouchers/', { tokenType: 'user' });
+				setVouchers(res.data || []);
+			}
+		} catch (err) {
+			console.error('Lỗi khi tải mã giảm giá:', err);
+		}
+	};
 
 	const fetchData = async () => {
 		try {
@@ -119,7 +136,36 @@ export default function BookingPage() {
 
 	const subtotal = ticketTotal + snackTotal;
 	const vipDiscount = Math.floor(subtotal * vipDiscountRate);
-	const grandTotal = subtotal - vipDiscount;
+
+	// Tự động tính toán chiết khấu Voucher và kiểm tra điều kiện min_spent
+	useEffect(() => {
+		if (!selectedVoucher) {
+			setVoucherDiscount(0);
+			return;
+		}
+
+		if (subtotal < selectedVoucher.min_spent) {
+			setSelectedVoucher(null);
+			setVoucherDiscount(0);
+			alert(`Đơn đặt vé đã thay đổi. Đơn hàng cần đạt tối thiểu ${selectedVoucher.min_spent.toLocaleString()}đ để áp dụng mã ${selectedVoucher.code}.`);
+			return;
+		}
+
+		let discount = 0;
+		if (selectedVoucher.discount_type === 'amount') {
+			discount = selectedVoucher.discount_amount;
+		} else if (selectedVoucher.discount_type === 'percentage') {
+			const pct = Math.floor(subtotal * (selectedVoucher.discount_amount / 100));
+			if (selectedVoucher.max_discount && selectedVoucher.max_discount > 0) {
+				discount = Math.min(pct, selectedVoucher.max_discount);
+			} else {
+				discount = pct;
+			}
+		}
+		setVoucherDiscount(discount);
+	}, [selectedVoucher, subtotal]);
+
+	const grandTotal = Math.max(0, subtotal - vipDiscount - voucherDiscount);
 
 	const handleContinue = async () => {
         const token = localStorage.getItem('userToken');
@@ -145,6 +191,7 @@ export default function BookingPage() {
 			ticket_total: ticketTotal,
 			snack_total: snackTotal,
 			total_price: grandTotal,
+			voucher_code: selectedVoucher ? selectedVoucher.code : null,
 		};
 
 		try {
@@ -234,81 +281,143 @@ export default function BookingPage() {
 					</div>
 				</div>
 
-				{/* Chọn đồ ăn */}
-				<div className="snack-selection">
-					<h3>Chọn đồ ăn</h3>
+				{/* Right Sidebar */}
+				<div className="booking-sidebar">
+					{/* Chọn đồ ăn */}
+					<div className="snack-selection">
+						<h3>Chọn đồ ăn</h3>
 
-					<div className="snack-list">
-						{snacks.map(snack => {
-							const quantity = selectedSnacks[snack.id] || 0;
-							return (
-								<div key={snack.id} className="snack-item">
-									<div className="snack-info">
-										<img src={snack.image || '/default-snack.jpg'} alt={snack.name} />
-										<div>
-											<h4>{snack.name}</h4>
-											<p className="snack-price">{snack.price?.toLocaleString()}đ</p>
+						<div className="snack-list">
+							{snacks.map(snack => {
+								const quantity = selectedSnacks[snack.id] || 0;
+								return (
+									<div key={snack.id} className="snack-item">
+										<div className="snack-info">
+											<img src={snack.image || '/default-snack.jpg'} alt={snack.name} />
+											<div>
+												<h4>{snack.name}</h4>
+												<p className="snack-price">{snack.price?.toLocaleString()}đ</p>
+											</div>
+										</div>
+
+										<div className="quantity-controls">
+											<button
+												className="qty-btn"
+												onClick={() => updateSnackQuantity(snack.id, -1)}
+												disabled={quantity === 0}
+											>
+												-
+											</button>
+											<span className="quantity">{quantity}</span>
+											<button
+												className="qty-btn"
+												onClick={() => updateSnackQuantity(snack.id, 1)}
+											>
+												+
+											</button>
 										</div>
 									</div>
+								);
+							})}
+						</div>
 
-									<div className="quantity-controls">
-										<button
-											className="qty-btn"
-											onClick={() => updateSnackQuantity(snack.id, -1)}
-											disabled={quantity === 0}
-										>
-											-
-										</button>
-										<span className="quantity">{quantity}</span>
-										<button
-											className="qty-btn"
-											onClick={() => updateSnackQuantity(snack.id, 1)}
-										>
-											+
-										</button>
-									</div>
+						{/* Chọn Khuyến mãi / Voucher - Embedded in right column */}
+						<div className="voucher-section-embedded" style={{ borderTop: '1px solid #eee', marginTop: '15px', paddingTop: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '15px' }}>
+							<h3 style={{ margin: 0, fontSize: '0.95rem', color: '#333', display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+								<FaGift color="#dc3545" /> Khuyến mãi / Voucher
+							</h3>
+							{vouchers.length > 0 ? (
+								<div style={{ flex: 1, maxWidth: '180px' }}>
+									<select
+										className="voucher-select-box"
+										value={selectedVoucher ? selectedVoucher.id : ''}
+										onChange={(e) => {
+											const val = e.target.value;
+											if (!val) {
+												setSelectedVoucher(null);
+											} else {
+												const v = vouchers.find(item => item.id === parseInt(val));
+												if (v) {
+													if (subtotal < v.min_spent) {
+														alert(`Đơn đặt vé chưa đạt giá trị tối thiểu ${v.min_spent.toLocaleString()}đ để dùng mã này.`);
+													} else {
+														setSelectedVoucher(v);
+													}
+												}
+											}
+										}}
+										style={{
+											width: '100%',
+											padding: '6px 8px',
+											borderRadius: '6px',
+											border: '1px solid #ddd',
+											fontSize: '12px',
+											color: '#333',
+											backgroundColor: '#fff',
+											cursor: 'pointer',
+											outline: 'none'
+										}}
+									>
+										<option value="">-- Chọn mã --</option>
+										{vouchers.map(v => (
+											<option key={v.id} value={v.id} disabled={subtotal < v.min_spent}>
+												{v.code} - Giảm {v.discount_type === 'amount' ? `${v.discount_amount.toLocaleString()}đ` : `${v.discount_amount}%`} {subtotal < v.min_spent ? ' [Chưa đủ]' : ''}
+											</option>
+										))}
+									</select>
 								</div>
-							);
-						})}
-					</div>
-				</div>
-			</div>
-
-			<div className="booking-footer">
-				<div className="price-summary">
-					<div className="price-row">
-						<span>Vé xem phim ({selectedSeats.length} ghế):</span>
-						<span>{ticketTotal.toLocaleString()}đ</span>
-					</div>
-					{snackTotal > 0 && (
-						<div className="price-row">
-							<span>Đồ ăn & nước uống:</span>
-							<span>{snackTotal.toLocaleString()}đ</span>
+							) : (
+								<p style={{ fontSize: '11px', color: '#999', margin: 0 }}>
+									Không có mã khả dụng
+								</p>
+							)}
 						</div>
-					)}
-					{vipDiscount > 0 && (
-						<div className="price-row vip-discount">
-							<span>Chiết khấu VIP ({vipTierName} -{vipDiscountRate * 100}%):</span>
-							<span style={{ color: '#ffe066', fontWeight: 'bold' }}>-{vipDiscount.toLocaleString()}đ</span>
-						</div>
-					)}
-					<div className="price-row total">
-						<span>Tổng cộng:</span>
-						<span>{grandTotal.toLocaleString()}đ</span>
 					</div>
-				</div>
 
-				<div className="footer-buttons">
-					<button className="btn-back" onClick={() => navigate(-1)}>
-						Quay lại
-					</button>
-					<button
-						className="btn-continue"
-						onClick={handleContinue}
-						disabled={selectedSeats.length === 0}
-					>
-						Tiếp tục thanh toán
-					</button>
+					{/* Hóa đơn & Nút thanh toán */}
+					<div className="price-summary-sidebar">
+						<div className="price-summary">
+							<div className="price-row">
+								<span>Vé xem phim ({selectedSeats.length} ghế):</span>
+								<span>{ticketTotal.toLocaleString()}đ</span>
+							</div>
+							{snackTotal > 0 && (
+								<div className="price-row">
+									<span>Đồ ăn & nước uống:</span>
+									<span>{snackTotal.toLocaleString()}đ</span>
+								</div>
+							)}
+							{vipDiscount > 0 && (
+								<div className="price-row vip-discount">
+									<span>Chiết khấu VIP ({vipTierName} -{vipDiscountRate * 100}%):</span>
+									<span style={{ color: '#f59e0b', fontWeight: 'bold' }}>-{vipDiscount.toLocaleString()}đ</span>
+								</div>
+							)}
+							{voucherDiscount > 0 && (
+								<div className="price-row voucher-discount" style={{ color: '#10b981' }}>
+									<span>Khuyến mãi ({selectedVoucher?.code}):</span>
+									<span style={{ fontWeight: 'bold' }}>-{voucherDiscount.toLocaleString()}đ</span>
+								</div>
+							)}
+							<div className="price-row total">
+								<span>Tổng cộng:</span>
+								<span>{grandTotal.toLocaleString()}đ</span>
+							</div>
+						</div>
+
+						<div className="footer-buttons">
+							<button className="btn-back" onClick={() => navigate(-1)}>
+								<FaArrowLeft style={{ marginRight: '6px' }} /> Quay lại
+							</button>
+							<button
+								className="btn-continue"
+								onClick={handleContinue}
+								disabled={selectedSeats.length === 0}
+							>
+								<FaCreditCard style={{ marginRight: '6px' }} /> Tiếp tục
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

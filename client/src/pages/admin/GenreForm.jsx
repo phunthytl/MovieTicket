@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import { FaSave, FaArrowLeft } from 'react-icons/fa';
 import '../../assets/css/admin/genreForm.css';
 
 export default function GenreForm({ mode }) {
@@ -54,8 +55,8 @@ export default function GenreForm({ mode }) {
             </div>
 
             <div className="form-buttons">
-            <button type="submit" className="save-btn">Lưu</button>
-            <button type="button" className="cancel-btn" onClick={() => navigate('/admin/genres')}>Quay lại</button>
+            <button type="submit" className="save-btn"><FaSave style={{ marginRight: '6px' }} /> Lưu</button>
+            <button type="button" className="cancel-btn" onClick={() => navigate('/admin/genres')}><FaArrowLeft style={{ marginRight: '6px' }} /> Quay lại</button>
             </div>
         </form>
         </div>

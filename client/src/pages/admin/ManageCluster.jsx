@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import SearchAndSort from '../../components/admin/SearchAndSort';
 import '../../assets/css/admin/admin.css';
 
 export default function ManageClusters() {
 	const [clusters, setClusters] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [sortKey, setSortKey] = useState('id');
+	const [sortOrder, setSortOrder] = useState('desc');
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -20,6 +24,15 @@ export default function ManageClusters() {
 		fetchData();
 	}, []);
 
+	const handleSort = (key) => {
+		if (sortKey === key) {
+			setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+		} else {
+			setSortKey(key);
+			setSortOrder('asc');
+		}
+	};
+
 	const handleDelete = async (id) => {
 		if (window.confirm('Xoá cụm rạp này?')) {
 			try {
@@ -31,6 +44,20 @@ export default function ManageClusters() {
 		}
 	};
 
+	const filteredAndSorted = [...clusters]
+		.filter((c) =>
+			c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(c.description || '').toLowerCase().includes(searchTerm.toLowerCase())
+		)
+		.sort((a, b) => {
+			if (!sortKey) return 0;
+			const valA = a[sortKey]?.toString().toLowerCase() || '';
+			const valB = b[sortKey]?.toString().toLowerCase() || '';
+			return sortOrder === 'asc'
+				? valA.localeCompare(valB)
+				: valB.localeCompare(valA);
+		});
+
 	return (
 		<div className="movie-management">
 			<div className="movie-management-header">
@@ -39,6 +66,18 @@ export default function ManageClusters() {
 					+ Thêm cụm rạp
 				</button>
 			</div>
+
+			<SearchAndSort
+				searchTerm={searchTerm}
+				onSearchChange={setSearchTerm}
+				sortKey={sortKey}
+				sortOrder={sortOrder}
+				onSort={handleSort}
+				columns={[
+					{ key: 'id', label: 'Mã cụm' },
+					{ key: 'name', label: 'Tên cụm rạp' }
+				]}
+			/>
 
 			<table className="admin-table">
 				<thead>
@@ -51,7 +90,7 @@ export default function ManageClusters() {
 					</tr>
 				</thead>
 				<tbody>
-					{clusters.map((c) => (
+					{filteredAndSorted.map((c) => (
 						<tr key={c.id}>
 							<td>{c.id}</td>
 							<td>

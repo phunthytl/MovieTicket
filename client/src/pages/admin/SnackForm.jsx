@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import { FaSave, FaArrowLeft, FaPlus, FaCamera } from 'react-icons/fa';
 import '../../assets/css/admin/snackForm.css';
 
 export default function SnackForm({ mode = 'create' }) {
@@ -142,11 +143,11 @@ export default function SnackForm({ mode = 'create' }) {
 						{preview ? (
 							<img src={preview} alt="preview" />
 						) : (
-							<div className="image-placeholder">📷</div>
+							<div className="image-placeholder"><FaCamera size={36} color="#aaa" /></div>
 						)}
 					</div>
 
-					<label htmlFor="image-upload" className="btn-upload">+ Thêm ảnh</label>
+					<label htmlFor="image-upload" className="btn-upload"><FaPlus style={{ marginRight: '6px' }} /> Thêm ảnh</label>
 					<input
 						id="image-upload"
 						type="file"
@@ -157,9 +158,9 @@ export default function SnackForm({ mode = 'create' }) {
 
 					{/* Nút lưu và quay lại */}
 					<div className="snack-form-actions">
-						<button type="submit" className="btn-save">💾 Lưu</button>
+						<button type="submit" className="btn-save"><FaSave style={{ marginRight: '6px' }} /> Lưu</button>
 						<button type="button" className="btn-back" onClick={() => navigate('/admin/snacks')}>
-							↩ Quay lại
+							<FaArrowLeft style={{ marginRight: '6px' }} /> Quay lại
 						</button>
 					</div>
 				</div>

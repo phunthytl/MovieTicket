@@ -13,7 +13,7 @@ export default function PaymentPage() {
 	const { showtime, movie } = location.state || {};
 	
 	useEffect(() => {
-		axiosClient.get(`payments/payments/${paymentId}/`)
+		axiosClient.get(`payments/payments/${paymentId}/`, { tokenType: 'user' })
 			.then(res => setPayment(res.data))
 			.catch(err => console.error('❌ Lỗi khi fetch payment:', err))
 
@@ -33,7 +33,7 @@ export default function PaymentPage() {
 
 	const cancelPayment = async () => {
 		try {
-			await axiosClient.post(`payments/payments/${paymentId}/cancel/`)
+			await axiosClient.post(`payments/payments/${paymentId}/cancel/`, {}, { tokenType: 'user' })
 			alert('Đơn hàng đã bị hủy do quá thời gian thanh toán.')
 			navigate(`/movies/${movie.id}/booking/${showtime.id}`)
 		} catch (err) {
@@ -50,7 +50,7 @@ export default function PaymentPage() {
 
 	const handleVNPayRedirect = async () => {
 		try {
-			const res = await axiosClient.post('payments/create-vnpay/', { payment_id: paymentId })
+			const res = await axiosClient.post('payments/create-vnpay/', { payment_id: paymentId }, { tokenType: 'user' })
 			window.location.href = res.data.payment_url
 		} catch (err) {
 			console.error('Lỗi khi tạo link VNPay:', err)

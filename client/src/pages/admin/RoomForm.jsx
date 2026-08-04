@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
+import { FaSave, FaArrowLeft } from 'react-icons/fa';
 import '../../assets/css/admin/snackForm.css';
 
 export default function RoomForm({ mode = 'create' }) {
@@ -119,7 +120,7 @@ export default function RoomForm({ mode = 'create' }) {
             </div>
             <div className="snack-form-right">
             <div className="snack-form-actions">
-                <button type="submit" className="btn-save">💾 Lưu</button>
+                <button type="submit" className="btn-save"><FaSave style={{ marginRight: '6px' }} /> Lưu</button>
                 <button
                 type="button"
                 className="btn-back"
@@ -129,7 +130,7 @@ export default function RoomForm({ mode = 'create' }) {
                     })
                 }
                 >
-                ↩ Quay lại
+                <FaArrowLeft style={{ marginRight: '6px' }} /> Quay lại
                 </button>
             </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import SearchAndSort from '../../components/admin/SearchAndSort';
 
 export default function ManageCinemas() {
     const { clusterId } = useParams();
@@ -10,6 +11,9 @@ export default function ManageCinemas() {
     const clusterName = location.state?.clusterName || '...';
 
     const [cinemas, setCinemas] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortKey, setSortKey] = useState('id');
+    const [sortOrder, setSortOrder] = useState('desc');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,6 +27,15 @@ export default function ManageCinemas() {
         fetchData();
     }, [clusterId]);
 
+    const handleSort = (key) => {
+        if (sortKey === key) {
+            setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+        } else {
+            setSortKey(key);
+            setSortOrder('asc');
+        }
+    };
+
     const handleDelete = async (id) => {
         if (window.confirm('Xoá rạp này?')) {
         try {
@@ -33,6 +46,21 @@ export default function ManageCinemas() {
         }
         }
     };
+
+    const filteredAndSorted = [...cinemas]
+        .filter((c) =>
+            c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (c.city || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (c.address || '').toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => {
+            if (!sortKey) return 0;
+            const valA = a[sortKey]?.toString().toLowerCase() || '';
+            const valB = b[sortKey]?.toString().toLowerCase() || '';
+            return sortOrder === 'asc'
+                ? valA.localeCompare(valB)
+                : valB.localeCompare(valA);
+        });
 
     return (
         <div className="movie-management">
@@ -50,6 +78,19 @@ export default function ManageCinemas() {
             </button>
         </div>
 
+        <SearchAndSort
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            sortKey={sortKey}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+            columns={[
+                { key: 'id', label: 'Mã rạp' },
+                { key: 'name', label: 'Tên rạp' },
+                { key: 'city', label: 'Thành phố' }
+            ]}
+        />
+
         <table className="admin-table">
             <thead>
             <tr>
@@ -62,7 +103,7 @@ export default function ManageCinemas() {
             </tr>
             </thead>
             <tbody>
-            {cinemas.map((c) => (
+            {filteredAndSorted.map((c) => (
                 <tr key={c.id}>
                 <td>{c.id}</td>
                 <td
