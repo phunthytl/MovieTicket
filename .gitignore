@@ -1,20 +1,96 @@
-# Environment variables
+# ==============================================================================
+# Environment & Secrets
+# ==============================================================================
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+**/.env
+**/client/.env
 
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Django local DB
+# ==============================================================================
+# Local Database & SQLite
+# ==============================================================================
+*.db
+*.sqlite3
 db.sqlite3
 
-# Node modules (for client)
+# ==============================================================================
+# Python & Virtual Environments
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv
+venv/
+ENV/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==============================================================================
+# Node.js & React Client
+# ==============================================================================
+node_modules/
 client/node_modules/
 client/build/
-client/.env
+client/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
 
-# OS files
+# ==============================================================================
+# IDEs & Editors
+# ==============================================================================
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+# ==============================================================================
+# OS Files
+# ==============================================================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
+
+# ==============================================================================
+# Local Documents & Temporary Reference Files
+# ==============================================================================
+*.docx
+*.xlsx
+*.xls
+*.pdf
+16_3.6.2025.docx
